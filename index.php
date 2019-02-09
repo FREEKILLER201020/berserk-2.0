@@ -450,8 +450,8 @@
             console.log(result);
             // console.log(result[0].started);
             // console.log(result[0].ended);
-            var start = result[0].started.split("-");
-            var end = result[0].ended.split("-");
+            var start = result[1].started.split("-");
+            var end = result[1].ended.split("-");
             var start_date=new Date(start[0],start[1]-1,start[2]);
             var end_date=new Date(end[0],end[1]-1,end[2]);
             if ($('#era').val() != -1){
