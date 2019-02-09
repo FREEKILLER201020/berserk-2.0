@@ -448,23 +448,23 @@
             // document.getElementById("id1").remove();
             // console.log(data);
             console.log(result);
-            // console.log(result[0].started);
-            // console.log(result[0].ended);
-            var start = result[1].started.split("-");
-            var end = result[1].ended.split("-");
+            console.log(result[0].started);
+            console.log(result[0].ended);
+            var start = result[0].started.split("-");
+            var end = result[0].ended.split("-");
             var start_date=new Date(start[0],start[1]-1,start[2]);
             var end_date=new Date(end[0],end[1]-1,end[2]);
             if ($('#era').val() != -1){
               end_date.setDate(end_date.getDate() + 1);
             }
-            // console.log(start_date);
-            // console.log(end_date);
+            console.log(start_date);
+            console.log(end_date);
             var dates = getDates(start_date,end_date );
             var string="";
             availableDates=[];
             dates.forEach(function(date) {
               availableDates.push(string.concat(date.getDate(),"-",date.getMonth()+1,"-",date.getFullYear()));
-              // console.log(string.concat(date.getDate(),"-",date.getMonth()+1,"-",date.getFullYear()));
+              console.log(string.concat(date.getDate(),"-",date.getMonth()+1,"-",date.getFullYear()));
             });
             document.getElementById('date').value=string.concat(end_date.getDate(),"/",end_date.getMonth()+1,"/",end_date.getFullYear());
             var tmp=end_date.getMonth()+1;

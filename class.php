@@ -2,7 +2,7 @@
 class Era_class
 {
     public $id;
-    public $satrted;
+    public $started;
     public $ended;
     public $lbz;
     public $points;
