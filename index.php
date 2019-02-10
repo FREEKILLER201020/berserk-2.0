@@ -118,6 +118,8 @@
       ?>
       <br>
       <script>
+      var $$header = document.querySelector('.js-header');
+
       // var availableDates = [<?php 	echo "\"{$dates[0][1]}\""; for ($i=1;$i<count($dates);$i++) {echo ",\"{$dates[$i][1]}\"";}?>];
       // console.log(availableDates);
         $(function() {
