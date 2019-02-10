@@ -17,7 +17,7 @@ $connection=Connect($config);
 $clan_search=$_POST["clan"];
 // $clan_search=-1;
 
-// $idd=-1;
+// $idd=50;
 $idd=$_POST["id"];
 
 // $order="nick";
@@ -31,7 +31,7 @@ $today=$d[2]."-".$d[0]."-".$d[1];
 
 
 // $_POST["type"]="era_data";
-$_POST["type"]="era";
+// $_POST["type"]="era";
 // $_POST["type"]="index";
 // $_POST["type"]="clans";
 if ($_POST["type"]=="index"){
