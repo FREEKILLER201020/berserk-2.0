@@ -158,6 +158,8 @@
           Клан:
           <select id="clans" name="Clans">
           </select>
+          <!-- Игрок:
+          <input id="player"> -->
           <br>
           Сортировка:
           <select id="order" name="Order">
@@ -248,6 +250,12 @@
     </div> -->
     <script>
     // func();
+    var pad = function(num) { return ('00'+num).slice(-2) };
+    date = new Date();
+    date = pad(date.getUTCMonth()+1)        + '/' +
+    pad(date.getUTCDate() ) + '/' +
+    date.getUTCFullYear();
+    $('#date').val(date);
     clans();
     eras_data();
       $(document).ready(function(){
@@ -415,7 +423,7 @@
           url:"sql.php", //the page containing php script
           type: "post", //request type,
           dataType: 'json',
-          data: {type:"index", datee: $('#date').val(),order: $('#order').val(),order_way: $('#order_way').val(),clan:$('#clans').val()},
+          data: {type:"index", datee: $('#date').val(),order: $('#order').val(),order_way: $('#order_way').val(),clan:$('#clans').val(),$nickname:$('#player').val()},
           async: false, // HERE
           success:function(result){
             // document.getElementById("id1").remove();
@@ -430,7 +438,7 @@
           url:"sql.php", //the page containing php script
           type: "post", //request type,
           dataType: 'json',
-          data: {type:"era_data", datee: $('#date').val(),order: $('#order').val(),order_way: $('#order_way').val(), id: $('#era').val(),clan:$('#clans').val()},
+          data: {type:"era_data", datee: $('#date').val(),order: $('#order').val(),order_way: $('#order_way').val(), id: $('#era').val(),clan:$('#clans').val(),$nickname:$('#player').val()},
           async: false, // HERE
           success:function(result){
             // document.getElementById("id1").remove();
@@ -602,7 +610,27 @@
     };
 
     // Usage
-
+    var data_fill=[];
+    $.ajax({
+      url:"sql.php", //the page containing php script
+      type: "post", //request type,
+      dataType: 'json',
+      data: {type:"players"},
+      async: false, // HERE
+      success:function(result){
+        // document.getElementById("id1").remove();
+        // console.log(data);
+        console.log(result);
+        result.forEach(function(res) {
+          data_fill.push(res.nick+" ("+res.id+")");
+        });
+      }
+    });
+    $( function() {
+    $( "#player" ).autocomplete({
+      source: data_fill
+    });
+  } );
     </script>
     <!-- <div style="padding-top:10px; padding-bottom:10px;">
       Footer

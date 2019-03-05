@@ -6,6 +6,14 @@ $config = json_decode($file, true);
 // print_r($config);
 $connection=Connect($config);
 
+// $_POST["type"]="era_data";
+// $_POST["datee"]="02/20/2019";
+// $_POST["clan"]="-1";
+// $_POST["id"]="52";
+// $_POST["order_way"]="desc";
+// $_POST["order"]="frags";
+
+
 
 
 // $query = "use berserk;\n";
@@ -15,9 +23,10 @@ $connection=Connect($config);
 //     die("Unable to connect to MySQL server:".$connection->connect_errno.$connection->connect_error);
 // }
 $clan_search=$_POST["clan"];
-// $clan_search=-1;
+$nickname=$_POST["nickname"];
+// $clan_search=171;
 
-// $idd=50;
+// $idd=51;
 $idd=$_POST["id"];
 
 // $order="nick";
@@ -29,11 +38,15 @@ $today = $_POST["datee"];
 $d=explode("/", $today);
 $today=$d[2]."-".$d[0]."-".$d[1];
 
+$json=$_POST["json"];
+// $json = '[{"id на форуме":"432","id в игре":"1851473","ник в игре":"theonetheonlyexeobur"},{"id на форуме":"563","id в игре":"11207","ник в игре":"GamBIT"}]';
+
 
 // $_POST["type"]="era_data";
 // $_POST["type"]="era";
 // $_POST["type"]="index";
 // $_POST["type"]="clans";
+// $_POST["type"]="save";
 if ($_POST["type"]=="index"){
 
   // echo $today;
@@ -47,7 +60,7 @@ if ($_POST["type"]=="index"){
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
-          $tmp= new Clan_class($row["id"],$row["title"]);
+          $tmp= new Clan_class($row["id"],$row["title"],$row["points"]);
           array_push($clans, $tmp);
       }
   }
@@ -67,26 +80,30 @@ if ($_POST["type"]=="index"){
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
-          if ($row["timemark"] == $today){
+          // if ($row["timemark"] == $today){
             foreach ($clans as $clan) {
               if ($row["clan_id"]==$clan->id){
                 $clan_title=$clan->title;
                 $clan_id=$row["clan_id"];
               }
             }
-          }
-          else{
-            $clan_title="Нет клана";
-            $clan_id=-2;
-          }
+          // }
+          // else{
+          //   $clan_title="Нет клана";
+          //   $clan_id=-2;
+          // }
           if ($clan_search==-1){
-            $tmp= new Player_class($row["timemark"],$row["id"], Restring($row["nick"]), $row["frags"], $row["deaths"], $row["level"], $clan_id, $clan_title);
-            array_push($players, $tmp);
+            // if (($nickname==$row["nick"])&&($nickname!=null)){
+              $tmp= new Player_class($row["timemark"],$row["id"], Restring($row["nick"]), $row["frags"], $row["deaths"], $row["level"], $clan_id, $clan_title);
+              array_push($players, $tmp);
+            // }
           }
           else{
             if ($clan_search==$clan_id){
-              $tmp= new Player_class($row["timemark"],$row["id"], Restring($row["nick"]), $row["frags"], $row["deaths"], $row["level"], $clan_id, $clan_title);
-              array_push($players, $tmp);
+              // if (($nickname==$row["nick"])&&($nickname!=null)){
+                $tmp= new Player_class($row["timemark"],$row["id"], Restring($row["nick"]), $row["frags"], $row["deaths"], $row["level"], $clan_id, $clan_title);
+                array_push($players, $tmp);
+              // }
             }
           }
       }
@@ -146,7 +163,7 @@ if ($_POST["type"]=="index"){
     $num++;
   }
   // print_r($players);
-  echo json_encode($return);
+  echo json_encode($return,JSON_UNESCAPED_UNICODE);
 }
 if ($_POST["type"]=="era"){
   if ($idd!=-1){
@@ -205,7 +222,7 @@ if ($_POST["type"]=="era_data"){
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
-          $tmp= new Clan_class($row["id"],$row["title"]);
+          $tmp= new Clan_class($row["id"],$row["title"],$row["points"]);
           array_push($clans, $tmp);
       }
   }
@@ -247,6 +264,7 @@ if ($_POST["type"]=="era_data"){
   $rows=array();
   $id_p=-1;
   // echo $query;
+  // exit();
   // if ($result->num_rows > 0) {
   //     while ($row = $result->fetch_assoc()) {
   //         // print_r($row);
@@ -306,17 +324,41 @@ if ($_POST["type"]=="era_data"){
             array_push($rows, $tmp);
           }
           else{
+            // $c1=count($rows);
+            // $c2=count($rows);
+            // for ($ipa=0;$ipa<$c1;$ipa++){
+            //   // print_r($rows[$ipa]);
+            //   for ($ipo=$ipa;$ipo<$c2;$ipo++){
+            //     if (($rows[$ipa]->id==$rows[$ip0]->id)&&($rows[$ipa]->nick==$rows[$ip0]->nick)&&($rows[$ipa]->frags==$rows[$ip0]->frags)&&($rows[$ipa]->deaths==$rows[$ip0]->deaths)&&($rows[$ipa]->level==$rows[$ip0]->level)&&($rows[$ipa]->clan_id==$rows[$ip0]->clan_id)){
+            //       // print_r($rows[$ipa]);
+            //       // print_r($rows[$ipo]);
+            //       unset($rows[$ipa]);
+            //     }
+            //   }
+            // }
             array_push($players, new Big_player($rows));
             $players[count($players)-1]->Cut();
             $rows=array();
+            array_push($rows, $tmp);
           }
           $id_p=$row["id"];
       }
+      // $c1=count($rows);
+      // $c2=count($rows);
+      // for ($ipa=0;$ipa<$c1;$ipa++){
+      //   for ($ipo=$ipa;$ipo<$c2;$ipo++){
+      //     if (($rows[$ipa]->id==$rows[$ip0]->id)&&($rows[$ipa]->nick==$rows[$ip0]->nick)&&($rows[$ipa]->frags==$rows[$ip0]->frags)&&($rows[$ipa]->deaths==$rows[$ip0]->deaths)&&($rows[$ipa]->level==$rows[$ip0]->level)&&($rows[$ipa]->clan_id==$rows[$ip0]->clan_id)){
+      //       // print_r($rows[$ipa]);
+      //       // print_r($rows[$ipo]);
+      //       unset($rows[$ipa]);
+      //     }
+      //   }
+      // }
       array_push($players, new Big_player($rows));
       $players[count($players)-1]->Cut();
       $rows=array();
   }
-  // print_r($players[85]);
+  // print_r($players);
   $new_players=array();
   foreach ($players as $player) {
     foreach ($player->cuts as $cut) {
@@ -474,10 +516,87 @@ if ($_POST["type"]=="clans"){
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
-          $tmp= new Clan_class($row["id"],$row["title"]);
+          $tmp= new Clan_class($row["id"],$row["title"],$row["points"]);
           array_push($clans, $tmp);
       }
   }
   echo json_encode($clans);
+}
+
+if ($_POST["type"]=="players"){
+
+  // echo $today;
+  // $query = "use berserk;\n";
+  // $result = $connection->query($query);
+  $connection=Connect($config);
+  $query = "call {$config["base_database"]}.players();\n";
+  $result = $connection->query($query);
+  $players=array();
+  // echo $query;
+  if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+          // print_r($row);
+          $tmp= new Player_class($row["timemark"],$row["id"], Restring($row["nick"]), $row["frags"], $row["deaths"], $row["level"], $clan_id, $clan_title);
+          array_push($players, $tmp);
+      }
+  }
+  echo json_encode($players);
+}
+if ($_POST["type"]=="save"){
+
+  $obj = json_decode($json,true);
+  // print_r($obj);
+
+  // echo $today;
+  // $query = "use berserk;\n";
+  // $result = $connection->query($query);
+  $ids=array();
+  foreach ($obj as $object) {
+    // print_r($object);
+    $good=1;
+    $connection=Connect($config);
+    $query = "call {$config["base_database"]}.check_id({$object['id в игре']});\n";
+    // echo $query;
+    $result = $connection->query($query);
+    if ($result->num_rows > 0) {
+      $connection2=Connect($config);
+      $query = "call {$config["base_database"]}.save({$object['id на форуме']},{$object['id в игре']});\n";
+      // echo $query;
+      $result2 = $connection2->query($query);
+      if ($result2->num_rows > 0) {
+        // echo json_encode(array('result' =>"good"));
+      }
+      else{
+        // echo json_encode(array('result' =>"not good"));
+        array_push($ids,array($object['id в игре']=>1));
+        $good=0;
+      }
+    }
+    else{
+      // echo json_encode(array('result' =>"not good"));
+      array_push($ids,array($object['id в игре']=>2));
+      $good=0;
+    }
+  }
+  if ($good==1){
+    echo json_encode(array('result' =>"good"));
+  }
+  else{
+    // print_r($ids);
+    echo json_encode($ids);
+  }
+  // $connection=Connect($config);
+  // $query = "call {$config["base_database"]}.players();\n";
+  // $result = $connection->query($query);
+  // $players=array();
+  // // echo $query;
+  // if ($result->num_rows > 0) {
+  //     while ($row = $result->fetch_assoc()) {
+  //         // print_r($row);
+  //         $tmp= new Player_class($row["timemark"],$row["id"], Restring($row["nick"]), $row["frags"], $row["deaths"], $row["level"], $clan_id, $clan_title);
+  //         array_push($players, $tmp);
+  //     }
+  // }
+  // echo json_encode($players);
 }
 ?>
