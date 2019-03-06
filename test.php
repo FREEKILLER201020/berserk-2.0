@@ -17,6 +17,8 @@ $load=0;
 $cities_load=0;
 $start_p=-1;
 $end_p=-1;
+$restart=-1;
+$restart_count=0;
 for ($i=0;$i<count($argv);$i++) {
     if ($argv[$i] == "-s") {
         $save=1;
@@ -32,6 +34,9 @@ for ($i=0;$i<count($argv);$i++) {
     }
     if ($argv[$i] == "-end") {
         $end_p=$argv[$i+1];
+    }
+    if ($argv[$i] == "-r") {
+        $restart=$argv[$i+1];
     }
 }
 
@@ -164,6 +169,18 @@ if (($start_p==-1)&&($end_p==-1)){
 }
 
 for ($i=$start_p;$i<$end_p;$i++) {
+    if ($restart>0){
+      if ($restart_count>0){
+        $restart_count--;
+      }
+      else{
+        $restart_count=$restart;
+        $res  = file_get_contents("/Applications/MAMP/bin/sqlrestart.sh");
+        $ls=shell_exec($res);
+        echo PHP_EOL.$ls.PHP_EOL;
+        // exit();
+      }
+    }
     $timee=$folders[$i]['time'];
     $t=(microtime(true)*10000-$t0)/$i;
     progressBar($i, count($folders)-1, $t, $t0);

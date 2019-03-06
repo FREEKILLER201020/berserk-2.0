@@ -580,3 +580,59 @@ SELECT * from matches where forum=id_forum and game=id_game;
   END$$
 
   DELIMITER ;
+
+
+
+
+
+
+
+    DELIMITER $$
+   CREATE PROCEDURE fights_history (IN era_id integer)
+
+
+    BEGIN
+
+     DECLARE v_finished INTEGER DEFAULT 0;
+            DECLARE idd integer;
+            declare startedd date;
+            declare endedd date;
+     -- declare cursor for employee email
+     -- DEClARE ids_cursor CURSOR FOR
+     -- SELECT DISTINCT id FROM Players;
+
+     -- declare NOT FOUND handler
+     -- DECLARE CONTINUE HANDLER
+     --        FOR NOT FOUND SET v_finished = 1;
+
+
+
+     select started, ended into startedd, endedd from eras where id=era_id;
+
+     --
+     -- OPEN ids_cursor;
+     --
+     -- get_email: LOOP
+     --
+     -- FETCH ids_cursor INTO idd;
+     --
+     --
+     -- IF v_finished = 1 THEN
+     -- LEAVE get_email;
+     -- END IF;
+     --
+     -- -- build email list
+     select * FROM Attacks where DATE(resolved)>=startedd and DATE(resolved)<=endedd + INTERVAL 1 DAY order by resolved ASC;
+
+
+     --
+     -- END LOOP get_email;
+     --
+     -- CLOSE ids_cursor;
+     -- -- select orderr;
+     -- -- select * from Players_t order by nick;
+
+
+    END$$
+
+    DELIMITER ;

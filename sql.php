@@ -6,7 +6,7 @@ $config = json_decode($file, true);
 // print_r($config);
 $connection=Connect($config);
 
-// $_POST["type"]="era_data";
+// $_POST["type"]="history";
 // $_POST["datee"]="02/20/2019";
 // $_POST["clan"]="-1";
 // $_POST["id"]="52";
@@ -598,5 +598,75 @@ if ($_POST["type"]=="save"){
   //     }
   // }
   // echo json_encode($players);
+}
+if ($_POST["type"]=="history"){
+
+  $query = "call {$config["base_database"]}.era_data(\"$idd\");\n";
+  $result = $connection->query($query);
+  // print_r($result);
+  // echo $query;
+  if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+        // print_r($row);
+          // print_r($row);$id, $start, $end, $lbz, $points
+          $today=$row["ended"];
+      }
+  }
+
+  $connection=Connect($config);
+  $query = "call {$config["base_database"]}.clans_list(\"$today\");\n";
+  $result = $connection->query($query);
+  $clans=array();
+  // echo $query;
+  if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+          // print_r($row);
+          $tmp= new Clan_class($row["id"],$row["title"],$row["points"]);
+          array_push($clans, $tmp);
+      }
+  }
+  // echo $today;
+  // $query = "use berserk;\n";
+  // $result = $connection->query($query);
+  $connection=Connect($config);
+  $query = "call {$config["base_database"]}.fights_history(\"$idd\");\n";
+  $result = $connection->query($query);
+  $fights=array();
+  // echo $query;
+  if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+          // print_r($row);
+          if ($clan_search!=-1){
+            if (($clan_search==$row["attacker"])||($clan_search==$row["defender"])){
+              $tmp= new Fight_class($row["attacker"],$row["defender"],$row["fromm"],$row["too"],$row["declared"],$row["resolved"],$row["winer"],$row["ended"]);
+              array_push($fights, $tmp);
+            }
+          }
+          else{
+            $tmp= new Fight_class($row["attacker"],$row["defender"],$row["fromm"],$row["too"],$row["declared"],$row["resolved"],$row["winer"],$row["ended"]);
+            array_push($fights, $tmp);
+          }
+      }
+  }
+  $res=array();
+  $n=1;
+  foreach ($fights as $fight) {
+    foreach ($clans as $clan) {
+      if ($clan->id==$fight->attacker_id){
+        $fight->attacker_id=$clan->title;
+      }
+      if ($clan->id==$fight->defender_id){
+        $fight->defender_id=$clan->title;
+      }
+      if ($clan->id==$fight->winer){
+        $fight->winer=$clan->title;
+      }
+    }
+    $fight->from=CityTitle($config,$fight->from);
+    $fight->to=CityTitle($config,$fight->to);
+    array_push($res,new Fight_class_web($n,$fight->attacker_id,$fight->defender_id,$fight->from,$fight->to,$fight->resolved,$fight->ended,$fight->winer));
+    $n++;
+  }
+  echo json_encode($res);
 }
 ?>

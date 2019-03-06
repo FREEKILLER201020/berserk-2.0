@@ -160,6 +160,32 @@ function CityId($config, $title)
   return -1;
 }
 
+function CityTitle($config, $id)
+{
+  if ($id==-1){
+    return "Варвары";
+  }
+  $connection=Connect($config);
+  $query = "call {$config["base_database"]}.get_city_data_id($id);\n";
+  $result = $connection->query($query);
+  mysqli_close($connection);
+  if (!$result) {
+      echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
+  }
+  // print_r($result);
+  $clans_server=array();
+  // echo $query.PHP_EOL;
+  if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+          // print_r($row);
+          if ($row["id"]==$id){
+            return $row["name"];
+          }
+      }
+  }
+  return -1;
+}
+
 
 function GetClanName3($connection, $config, $id)
 {
