@@ -406,8 +406,7 @@
               }
             }
         }
-    </script>
-    <script>
+
     var getDates = function(startDate, endDate) {
       var dates = [],
           currentDate = startDate,
