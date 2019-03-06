@@ -175,13 +175,13 @@
     date.getUTCFullYear();
     $('#date').val(date);
     clans();
-    eras_data();
+    // eras_data();
     create2();
     $('#era').val($("#era").find('option').eq(0).val());
 
-      $(document).ready(function(){
-        $('#era').on("input", eras_data);
-      });
+      // $(document).ready(function(){
+      //   $('#era').on("input", eras_data);
+      // });
       $(document).ready(function(){
         $('#date').on("input", func);
       });
@@ -194,10 +194,10 @@
       $(document).ready(function(){
         $('#clans').on("change", func);
       });
-      function eras_data(){
-        console.log($('#era').val());
-        get_eras_data();
-      }
+      // function eras_data(){
+      //   console.log($('#era').val());
+      //   get_eras_data();
+      // }
       function func(){
         var date = $('#date').val();
         console.log(date);
@@ -264,43 +264,43 @@
           }
         });
       }
-      function get_eras_data () {
-        $.ajax({
-          url:"sql.php", //the page containing php script
-          type: "post", //request type,
-          dataType: 'json',
-          data: {type:"era", id: $('#era').val()},
-          success:function(result){
-            // document.getElementById("id1").remove();
-            // console.log(data);
-            console.log(result);
-            console.log(result[0].started);
-            console.log(result[0].ended);
-            var start = result[0].started.split("-");
-            var end = result[0].ended.split("-");
-            var start_date=new Date(start[0],start[1]-1,start[2]);
-            var end_date=new Date(end[0],end[1]-1,end[2]);
-            if ($('#era').val() != -1){
-              end_date.setDate(end_date.getDate() + 1);
-            }
-            console.log(start_date);
-            console.log(end_date);
-            var dates = getDates(start_date,end_date );
-            var string="";
-            availableDates=[];
-            dates.forEach(function(date) {
-              availableDates.push(string.concat(date.getDate(),"-",date.getMonth()+1,"-",date.getFullYear()));
-              console.log(string.concat(date.getDate(),"-",date.getMonth()+1,"-",date.getFullYear()));
-            });
-            document.getElementById('date').value=string.concat(end_date.getDate(),"/",end_date.getMonth()+1,"/",end_date.getFullYear());
-            var tmp=end_date.getMonth()+1;
-            document.getElementById('date').value=string.concat(("0" + tmp).slice(-2),"/",("0" + end_date.getDate()).slice(-2),"/",end_date.getFullYear());
-            func();
-
-            // CreateTableFromJSON(result)
-          }
-        });
-      }
+      // function get_eras_data () {
+      //   $.ajax({
+      //     url:"sql.php", //the page containing php script
+      //     type: "post", //request type,
+      //     dataType: 'json',
+      //     data: {type:"era", id: $('#era').val()},
+      //     success:function(result){
+      //       // document.getElementById("id1").remove();
+      //       // console.log(data);
+      //       console.log(result);
+      //       console.log(result[0].started);
+      //       console.log(result[0].ended);
+      //       var start = result[0].started.split("-");
+      //       var end = result[0].ended.split("-");
+      //       var start_date=new Date(start[0],start[1]-1,start[2]);
+      //       var end_date=new Date(end[0],end[1]-1,end[2]);
+      //       if ($('#era').val() != -1){
+      //         end_date.setDate(end_date.getDate() + 1);
+      //       }
+      //       console.log(start_date);
+      //       console.log(end_date);
+      //       var dates = getDates(start_date,end_date );
+      //       var string="";
+      //       availableDates=[];
+      //       dates.forEach(function(date) {
+      //         availableDates.push(string.concat(date.getDate(),"-",date.getMonth()+1,"-",date.getFullYear()));
+      //         console.log(string.concat(date.getDate(),"-",date.getMonth()+1,"-",date.getFullYear()));
+      //       });
+      //       document.getElementById('date').value=string.concat(end_date.getDate(),"/",end_date.getMonth()+1,"/",end_date.getFullYear());
+      //       var tmp=end_date.getMonth()+1;
+      //       document.getElementById('date').value=string.concat(("0" + tmp).slice(-2),"/",("0" + end_date.getDate()).slice(-2),"/",end_date.getFullYear());
+      //       func();
+      //
+      //       // CreateTableFromJSON(result)
+      //     }
+      //   });
+      // }
 
         function CreateTableFromJSON(myBooks) {
 
@@ -407,21 +407,21 @@
             }
         }
 
-    var getDates = function(startDate, endDate) {
-      var dates = [],
-          currentDate = startDate,
-          addDays = function(days) {
-            var date = new Date(this.valueOf());
-            date.setDate(date.getDate() + days);
-            return date;
-          };
-      while (currentDate <= endDate) {
-        // console.log("here");
-        dates.push(currentDate);
-        currentDate = addDays.call(currentDate, 1);
-      }
-      return dates;
-    };
+    // var getDates = function(startDate, endDate) {
+    //   var dates = [],
+    //       currentDate = startDate,
+    //       addDays = function(days) {
+    //         var date = new Date(this.valueOf());
+    //         date.setDate(date.getDate() + days);
+    //         return date;
+    //       };
+    //   while (currentDate <= endDate) {
+    //     // console.log("here");
+    //     dates.push(currentDate);
+    //     currentDate = addDays.call(currentDate, 1);
+    //   }
+    //   return dates;
+    // };
 
     // Usage
 
