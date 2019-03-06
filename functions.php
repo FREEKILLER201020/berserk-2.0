@@ -167,6 +167,7 @@ function CityTitle($config, $id)
   }
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.get_city_data_id($id);\n";
+  echo $query;
   $result = $connection->query($query);
   if (!$result) {
       echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);

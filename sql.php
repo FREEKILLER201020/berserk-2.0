@@ -623,7 +623,7 @@ if ($_POST["type"]=="history"){
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
-          $tmp= new Clan_class($row["id"],$row["title"],$row["points"]);
+          $tmp= new Clan_class($row["id"],$row["title"],0);
           array_push($clans, $tmp);
       }
   }
