@@ -1,4 +1,6 @@
 <?php
+error_reporting(1);
+
 require("functions.php");
 require("class.php");
 $file  = file_get_contents(realpath(dirname(__FILE__))."/../config.json");
