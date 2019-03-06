@@ -96,7 +96,6 @@ function GetClanId($config, $title)
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.clans_list_one_title('$title');\n";
   $result = $connection->query($query);
-  mysqli_close($connection);
   if (!$result) {
       echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
@@ -111,6 +110,7 @@ function GetClanId($config, $title)
           }
       }
   }
+  mysqli_close($connection);
   return -1;
 }
 
@@ -119,7 +119,6 @@ function WhoHasThisCity($config, $id)
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.get_city_data_id($id);\n";
   $result = $connection->query($query);
-  mysqli_close($connection);
   if (!$result) {
       echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
@@ -134,6 +133,7 @@ function WhoHasThisCity($config, $id)
           }
       }
   }
+  mysqli_close($connection);
   return -1;
 }
 
@@ -142,7 +142,6 @@ function CityId($config, $title)
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.get_city_data('$title');\n";
   $result = $connection->query($query);
-  mysqli_close($connection);
   if (!$result) {
       echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
@@ -157,6 +156,7 @@ function CityId($config, $title)
           }
       }
   }
+  mysqli_close($connection);
   return -1;
 }
 
@@ -168,7 +168,6 @@ function CityTitle($config, $id)
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.get_city_data_id($id);\n";
   $result = $connection->query($query);
-  mysqli_close($connection);
   if (!$result) {
       echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
@@ -183,6 +182,7 @@ function CityTitle($config, $id)
           }
       }
   }
+  mysqli_close($connection);
   return -1;
 }
 
