@@ -40,6 +40,7 @@
 		     window.open("<?php echo $res?>"+url+"?"+extras,"_self");
 	   }
 }
+alert("Время указано по гринвичу!");
 </script>
   <body>
     <div class="header sticky sticky--top js-header">
