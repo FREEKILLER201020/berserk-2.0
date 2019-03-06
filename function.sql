@@ -275,7 +275,7 @@ CREATE PROCEDURE clans_list (IN datte date)
 
 
   BEGIN
- select * from cities where id=idd order by timemark desc limit 1;
+ select * from Cities where id=idd order by timemark desc limit 1;
 
   END$$
 
@@ -286,7 +286,7 @@ CREATE PROCEDURE clans_list (IN datte date)
 
 
     BEGIN
-   select * from cities where name=titlee order by timemark desc limit 1;
+   select * from Cities where name=titlee order by timemark desc limit 1;
 
     END$$
 
