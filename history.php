@@ -251,6 +251,7 @@ alert("Время указано по гринвичу!");
         });
       }
       function create2 () {
+        console.log("data2");
         $.ajax({
           url:"sql.php", //the page containing php script
           type: "post", //request type,
