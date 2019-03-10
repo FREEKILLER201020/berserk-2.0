@@ -8,12 +8,12 @@ $config = json_decode($file, true);
 // print_r($config);
 $connection=Connect($config);
 
-$_POST["type"]="history";
+// $_POST["type"]="history";
 // $_POST["player"]="1866676";
 // $_POST["json"]='[{"карта":"akvanit","просмотр":"","id":"3"}]';
 // $_POST["datee"]="02/20/2019";
-$_POST["clan"]="-1";
-$_POST["id"]="52";
+// $_POST["clan"]="-1";
+// $_POST["id"]="52";
 // $_POST["order_way"]="desc";
 // $_POST["order"]="frags";
 

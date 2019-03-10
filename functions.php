@@ -143,7 +143,7 @@ function CityId($config, $title)
   $query = "call {$config["base_database"]}.get_city_data('$title');\n";
   $result = $connection->query($query);
   if (!$result) {
-      echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
+      // echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
   // print_r($result);
   $clans_server=array();
@@ -170,7 +170,7 @@ function CityTitle($config, $id)
   // echo $query;
   $result = $connection->query($query);
   if (!$result) {
-      echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
+      // echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
   // print_r($result);
   $clans_server=array();
