@@ -320,7 +320,27 @@ select * from eras where id=idd;
 
 
 
+ DELIMITER $$
+ CREATE PROCEDURE cards_all ()
 
+
+ BEGIN
+select * from Cards order by id;
+
+ END$$
+
+ DELIMITER ;
+
+ DELIMITER $$
+ CREATE PROCEDURE card (in idd integer)
+
+
+ BEGIN
+select * from Cards where id=idd order by id;
+
+ END$$
+
+ DELIMITER ;
 
 
 
@@ -636,3 +656,26 @@ SELECT * from matches where forum=id_forum and game=id_game;
     END$$
 
     DELIMITER ;
+
+
+    DELIMITER $$
+    CREATE PROCEDURE add_cards_set (in datee datetime, in player integer, in json varchar(10000))
+
+    BEGIN
+    insert into Sets (timemark, player_id, cards) values (datee, player, json);
+
+    END$$
+
+    DELIMITER ;
+
+
+
+        DELIMITER $$
+        CREATE PROCEDURE select_cards_set (in player integer)
+
+        BEGIN
+        select * from Sets where player_id=player order by timemark desc;
+
+        END$$
+
+        DELIMITER ;

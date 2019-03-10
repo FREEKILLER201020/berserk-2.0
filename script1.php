@@ -9,8 +9,46 @@ $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
 include($phpbb_root_path . 'common.' . $phpEx);
 
-$username = request_var('username', '', true);
-$password = request_var('password', '', true);
+$username = request_var('n', '', true);
+$password = request_var('p', '', true);
+$a = request_var('a', '', true);
+$b = request_var('b', '', true);
+$c = request_var('c', '', true);
+$d = request_var('d', '', true);
+
+// $username = $_GET["n"];
+// $password = $_GET['p'];
+// $a = $_GET['a'];
+// $b = $_GET['b'];
+// $c = $_GET['c'];
+// $d = $_GET['d'];
+$file  = file_get_contents(realpath(dirname(__FILE__))."/../config_lg.json");
+$config = json_decode($file, true);
+$key=$config['key'];
+$cipher=$config['cipher'];
+if (in_array($cipher, openssl_get_cipher_methods()))
+{
+    $iv = hex2bin($a);
+    $tag = hex2bin($b);
+    $username = openssl_decrypt($username, $cipher, $key, $options=0, $iv, $tag);
+    echo $username."\n";
+    // print_r($data);
+    // $res=json_encode($data);
+}
+
+if (in_array($cipher, openssl_get_cipher_methods()))
+{
+    $iv = hex2bin($c);
+    $tag = hex2bin($d);
+    $password = openssl_decrypt($password, $cipher, $key, $options=0, $iv, $tag);
+    echo $password."\n";
+    // print_r($data);
+    // $res=json_encode($data);
+}
+
+// exit();
+// $username = request_var('username', '', true);
+// $password = request_var('password', '', true);
 
 if (!$username || !$password) {
     // echo "Пожалуйста введите имя и пароль<br />";

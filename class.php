@@ -1,4 +1,5 @@
 <?php
+
 class City
 {
     public $id;
@@ -11,6 +12,32 @@ class City
       $this->name=$n;
       $this->clan=$c;
     }
+}
+
+class Card
+{
+  public $id;
+  public $name;
+  public $type;
+  public $file;
+  public function __construct($i,$n,$t,$f)
+  {
+    $this->id=$i;
+    $this->name=$n;
+    $this->type=$t;
+    $this->file=$f;
+  }
+}
+
+class Card_web
+{
+  public $name;
+  public $file;
+  public function __construct($n,$f)
+  {
+    $this->name=$n;
+    $this->file=$f;
+  }
 }
 
 class Fight_class

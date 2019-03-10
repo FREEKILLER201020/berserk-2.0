@@ -8,7 +8,9 @@ $config = json_decode($file, true);
 // print_r($config);
 $connection=Connect($config);
 
-// $_POST["type"]="history";
+// $_POST["type"]="load_cards";
+// $_POST["player"]="1866676";
+// $_POST["json"]='[{"карта":"akvanit","просмотр":"","id":"3"}]';
 // $_POST["datee"]="02/20/2019";
 // $_POST["clan"]="-1";
 // $_POST["id"]="52";
@@ -26,6 +28,7 @@ $connection=Connect($config);
 // }
 $clan_search=$_POST["clan"];
 $nickname=$_POST["nickname"];
+$player_id=$_POST["player"];
 // $clan_search=171;
 
 // $idd=51;
@@ -670,5 +673,101 @@ if ($_POST["type"]=="history"){
     $n++;
   }
   echo json_encode($res);
+}
+if ($_POST["type"]=="cards"){
+
+  // echo $today;
+  // $query = "use berserk;\n";
+  // $result = $connection->query($query);
+  $connection=Connect($config);
+  $query = "call {$config["base_database"]}.cards_all();\n";
+  $result = $connection->query($query);
+  $cards=array();
+  // echo $query;
+  if ($result->num_rows > 0) {
+      while ($row = $result->fetch_assoc()) {
+          // print_r($row);
+          $tmp= new Card($row["id"],$row["name"],$row["type"],$row["file"]);
+          array_push($cards, $tmp);
+      }
+  }
+  echo json_encode($cards);
+}
+
+
+if ($_POST["type"]=="save_cards"){
+
+  $obj = json_decode($json,true);
+  // print_r($obj);
+
+
+  // echo $today;
+  // $query = "use berserk;\n";
+  // $result = $connection->query($query);
+  $ids=array();
+  foreach ($obj as $object) {
+    if (intval($object['id'])>0){
+      array_push($ids,intval($object['id']));
+    }
+  }
+  // print_r($ids);
+  if (count($ids)>0){
+    $today = date("Y-m-d H:i:s");
+    $connection=Connect($config);
+    $json=$connection->real_escape_string(json_encode($ids));
+    $query = "call {$config["base_database"]}.add_cards_set(\"$today\",$player_id,\"$json\");\n";
+    $result = $connection->query($query);
+    // $players=array();
+    // echo $query;
+    // print_r($result);
+    $ok=array();
+    if (!$result){
+      $ok['ok']=0;
+    }
+    else{
+      $ok['ok']=1;
+    }
+  }
+  else{
+    $ok['ok']=0;
+  }
+  echo json_encode($ok);
+}
+
+if ($_POST["type"]=="load_cards"){
+
+
+    $connection=Connect($config);
+    $json=$connection->real_escape_string(json_encode($ids));
+    $query = "call {$config["base_database"]}.select_cards_set($player_id);\n";
+    $result = $connection->query($query);
+    $sets=array();
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $ids=json_decode($row['cards']);
+          $cards=array();
+          foreach ($ids as $id) {
+            $connection2=Connect($config);
+            $query2 = "call {$config["base_database"]}.card($id);\n";
+            $result2 = $connection2->query($query2);
+            // echo $query2;
+            if ($result2->num_rows > 0) {
+                while ($row2 = $result2->fetch_assoc()) {
+                    // print_r($row2);
+                    $tmp= new Card_web($row2["name"],$row2["file"]);
+                    array_push($cards, $tmp);
+                }
+            }
+          }
+            // print_r($row);$id, $start, $end, $lbz, $points
+            // $today=$row["ended"];
+            array_push($sets,$cards);
+        }
+
+    }
+    // $players=array();
+    // echo $query;
+    // print_r($result);
+  echo json_encode($sets);
 }
 ?>
