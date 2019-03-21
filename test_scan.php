@@ -12,7 +12,8 @@ $all_attacks_array_i=0;
 
 $file  = file_get_contents(realpath(dirname(__FILE__))."/../config.json");
 $config = json_decode($file, true);
-
+$scanned_folders=array();
+$scanned_folders["done"]=0;
 $save=0;
 $load=0;
 $cities_load=0;
@@ -20,9 +21,15 @@ $start_p=-1;
 $end_p=-1;
 $restart=-1;
 $restart_count=0;
+$debug=0;
+$no_update=0;
+$continue=0;
 for ($i=0;$i<count($argv);$i++) {
     if ($argv[$i] == "-s") {
         $save=1;
+    }
+    if ($argv[$i] == "-d") {
+        $debug=1;
     }
     if ($argv[$i] == "-l") {
         $load=1;
@@ -38,6 +45,12 @@ for ($i=0;$i<count($argv);$i++) {
     }
     if ($argv[$i] == "-r") {
         $restart=$argv[$i+1];
+    }
+    if ($argv[$i] == "-no_update") {
+        $no_update=1;
+    }
+    if ($argv[$i] == "-contin") {
+        $continue=1;
     }
 }
 
@@ -215,6 +228,15 @@ if (($start_p==-1)&&($end_p==-1)){
   $end_p=count($folders);
 }
 
+if ($continue==1){
+  $file_done  = file_get_contents(realpath(dirname(__FILE__))."/scanned_folders.json");
+  $scanned_done = json_decode($file_done, true);
+  $start_p=$scanned_done["done"];
+  $scanned_folders["done"]=$start_p;
+}
+if ($debug==1){
+  echo PHP_EOL."Scan from $start_p to $end_p".PHP_EOL;
+}
 for ($i=$start_p;$i<$end_p;$i++) {
     $scanned_folders["done"]++;
     if ($restart>0){
@@ -232,7 +254,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
     $log=array();
     $timee=$folders[$i]['time'];
     $t=(microtime(true)*10000-$t0)/$i;
-    progressBar($i, count($folders)-1, $t, $t0);
+    progressBar($i, count($folders), $t, $t0);
     $noerr=1;
     // FOLDER IS BAD IF CLANS FILE IS EMPTY
     $file  = realpath(dirname(__FILE__))."/{$folders[$i]['folder']}/clans_{$folders[$i]['file_dir']}.json";
@@ -308,12 +330,6 @@ for ($i=$start_p;$i<$end_p;$i++) {
     if ($noerr==0) {
         $bad_folders++;
     }
-    // print_r($log);
-    $file_link=$folders[$i]['folder']."/log_".$folders[$i]['file_dir'].".json";
-    if (filesize($file_link)!=0) {
-      shell_exec('rm '.$file_link);
-    }
-    file_put_contents($file_link, json_encode($log, JSON_UNESCAPED_UNICODE));
     // IF FOLDER IS GOOD, SCAN IT!
     if ($noerr==1) {
         if ($no_update!=1){
@@ -353,6 +369,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                             $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
                             $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']});\n";
                             if ($debug==1){
+                              $log["log"].="{".$query."}";
                               echo $query.PHP_EOL;
                             }
                             $result = $connection->query($query);
@@ -365,6 +382,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                     $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
                     $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']});\n";
                     if ($debug==1){
+                      $log["log"].="{".$query."}";
                       echo $query.PHP_EOL;
                     }
                     $result = $connection->query($query);
@@ -392,6 +410,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                                 $d=date('Y-m-d H:i:s', $timee);
                                 $query = "INSERT INTO {$config['base_database']}.Players (timemark,id,nick,frags,deaths,level,clan_id) values (\"{$d}\",{$player['id']},\"{$player['nick']}\",{$player['frags']},{$player['deaths']},{$player['level']},{$row['id']});\n";
                                 if ($debug==1){
+                                  $log["log"].="{".$query."}";
                                   echo $query.PHP_EOL;
                                 }
                                 $result = $connection->query($query);
@@ -411,6 +430,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                         $d=date('Y-m-d H:i:s', $timee);
                         $query = "INSERT INTO {$config['base_database']}.Players (timemark,id,nick,frags,deaths,level,clan_id) values (\"{$d}\",{$player['id']},\"{$player['nick']}\",{$player['frags']},{$player['deaths']},{$player['level']},{$row['id']});\n";
                         if ($debug==1){
+                          $log["log"].="{".$query."}";
                           echo $query.PHP_EOL;
                         }
                         $result = $connection->query($query);
@@ -441,6 +461,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                     $d=date('Y-m-d H:i:s', $timee);
                     $query = "INSERT INTO {$config['base_database']}.Players (timemark,id,nick,frags,deaths,level,clan_id) values (\"{$d}\",{$player_server->id},\"{$player_server->nick}\",{$player_server->frags},{$player_server->deaths},{$player_server->level},-1);\n";
                     if ($debug==1){
+                      $log["log"].="{".$query."}";
                       echo $query.PHP_EOL;
                     }
                     $result = $connection->query($query);
@@ -454,6 +475,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                     $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
                     $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points,gone) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']},\"{$d}\");\n";
                     if ($debug==1){
+                      $log["log"].="{".$query."}";
                       echo $query.PHP_EOL;
                     }
                     $result = $connection->query($query);
@@ -493,6 +515,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                                     $d=date('Y-m-d H:i:s', $folders[$i]['time']);
                                     $query = "INSERT INTO {$config['base_database']}.Cities (timemark,id,name,clan_id) values (\"{$d}\",{$row['id']},\"{$row['name']}\",{$row['clan']});\n";
                                     if ($debug==1){
+                                      $log["log"].="{".$query."}";
                                       echo $query.PHP_EOL;
                                     }
                                     $result = $connection->query($query);
@@ -505,6 +528,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                             $d=date('Y-m-d H:i:s', $folders[$i]['time']);
                             $query = "INSERT INTO {$config['base_database']}.Cities (timemark,id,name,clan_id) values (\"{$d}\",{$row['id']},\"{$row['name']}\",{$row['clan']});\n";
                             if ($debug==1){
+                              $log["log"].="{".$query."}";
                               echo $query.PHP_EOL;
                             }
                             $result = $connection->query($query);
@@ -547,6 +571,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                     $connection=Connect($config);
                     $query = "INSERT INTO {$config['base_database']}.Attacks (attacker,defender,fromm,too,declared,resolved) values ('{$attacks['attacker']}','{$attacks['defender']}',\"{$attacks['from']}\",\"{$attacks['to']}\",\"{$attacks['declared']}\",\"{$attacks['resolved']}\");\n";
                     if ($debug==1){
+                      $log["log"].="{".$query."}";
                       echo $query.PHP_EOL;
                     }
                     $result = $connection->query($query);
@@ -564,6 +589,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                     $winer=WhoHasThisCity($config, $attack->to);
                     $query = "UPDATE {$config['base_database']}.Attacks set ended=\"$d\", winer=$winer WHERE attacker='{$attack->attacker_id}' and defender='{$attack->defender_id}' and fromm=\"{$attack->from}\" and too=\"{$attack->to}\" and declared=\"{$attack->declared}\" and resolved=\"{$attack->resolved}\";\n";
                     if ($debug==1){
+                      $log["log"].="{".$query."}";
                       echo $query.PHP_EOL;
                     }
                     $result = $connection->query($query);
@@ -596,7 +622,26 @@ for ($i=$start_p;$i<$end_p;$i++) {
             }
         }
     }
+    // print_r($log);
+    $file_link=$folders[$i]['folder']."/log_".$folders[$i]['file_dir'].".json";
+    if (filesize($file_link)!=0) {
+      shell_exec('rm '.$file_link);
+    }
+    $text=json_encode($log, JSON_UNESCAPED_UNICODE);
+    file_put_contents($file_link, $text);
+    $connection=Connect($config);
+    $text=$connection->escape_string($text);
+    $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
+    $query = "INSERT INTO {$config['base_database']}.Logs (timemark,log) values (\"$d\",\"$text\")\n";
+    if ($debug==1){
+      echo $query.PHP_EOL;
+    }
+    $result = $connection->query($query);
+    mysqli_close($connection);
 }
+$file_link_scan="scanned_folders.json";
+file_put_contents($file_link_scan, json_encode($scanned_folders, JSON_UNESCAPED_UNICODE));
+
 // DATA ANALISE END
 // print_r($all_attacks_array);
 echo PHP_EOL."$bad_folders/".count($folders)." are bad folders ".$bad_folders/count($folders)*100 .PHP_EOL;
