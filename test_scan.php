@@ -624,6 +624,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
     }
     // print_r($log);
     $file_link=$folders[$i]['folder']."/log_".$folders[$i]['file_dir'].".json";
+    echo $file_link.PHP_EOL;
     if (filesize($file_link)!=0) {
       shell_exec('rm '.$file_link);
     }
