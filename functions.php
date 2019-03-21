@@ -338,3 +338,76 @@ function progressBar($done, $total, $step_time, $start_time)
     $write = sprintf("\033[0G\033[2K[%'={$perc}s>%-{$left}s] - $perc2%% - $done/$total; Time spend: ".$min2." min ".$sec2." sec ".$mil2." mil". "; Time left: ".$min." min ".$sec." sec ".$mil." mil", "", "");
     fwrite(STDERR, $write);
 }
+
+function PrintTable($table){
+  reset($table);
+  $first_key = key($table);
+  $strings=array();
+  foreach ($table as $key => $row) {
+    array_push($strings,$key);
+      foreach ($row as $key2 => $cell) {
+        array_push($strings,$key2);
+        array_push($strings,$cell);
+      }
+  }
+  $strings=array_unique($strings);
+  print_r($strings);
+  $max_len=0;
+  foreach ($strings as $string) {
+    if (strlen($string)>$max_len){
+      $max_len=strlen($string);
+    }
+  }
+  echo $max_len.PHP_EOL;
+  // for ($l=0; $l < count($table[0]); $l++) {
+  echo "|";
+  echo str_pad("", $max_len, "-", STR_PAD_BOTH);
+  echo "|";
+  foreach ($table[$first_key] as $key2 => $cell) {
+      // echo $key2." ";
+      echo str_pad("", $max_len, "-", STR_PAD_BOTH);
+      echo "|";
+  }
+  echo PHP_EOL;
+  echo "|";
+  echo str_pad("", $max_len, " ", STR_PAD_BOTH);
+  echo "|";
+  foreach ($table[$first_key] as $key2 => $cell) {
+      // echo $key2." ";
+      echo str_pad($key2, $max_len, " ", STR_PAD_BOTH);
+      echo "|";
+  }
+  echo PHP_EOL;
+
+  // }
+  foreach ($table as $key => $row) {
+      echo "|";
+      echo str_pad("", $max_len, "-", STR_PAD_BOTH);
+      echo "|";
+      foreach ($table[$first_key] as $key2 => $cell) {
+          // echo $key2." ";
+          echo str_pad("", $max_len, "-", STR_PAD_BOTH);
+          echo "|";
+      }
+      echo PHP_EOL;
+      echo "|";
+      echo str_pad($key, $max_len, " ", STR_PAD_BOTH);
+      echo "|";
+      foreach ($row as $key2 => $cell) {
+          echo str_pad($cell, $max_len, " ", STR_PAD_BOTH);
+          echo "|";
+      }
+      echo PHP_EOL;
+      // print_r($row);
+    // code...
+  }
+  echo "|";
+  echo str_pad("", $max_len, "-", STR_PAD_BOTH);
+  echo "|";
+  foreach ($table[$first_key] as $key2 => $cell) {
+      // echo $key2." ";
+      echo str_pad("", $max_len, "-", STR_PAD_BOTH);
+      echo "|";
+  }
+  echo PHP_EOL;
+}

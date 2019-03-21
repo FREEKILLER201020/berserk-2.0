@@ -121,10 +121,15 @@
       </table>
     </div>
 
-    <button id="export-btn" class="btn btn-primary">Export Data</button>
+    <button id="export-btn" class="btn btn-primary">Сохранить сборку</button>
     <p id="export"></p>
   </div>
   <div class="parent">
+    <p>Типовая сборка игрока</p>
+    <p id="showData_t"></p>
+  </div>
+  <div class="parent">
+    <p>Сборки игрока</p>
     <p id="showData"></p>
   </div>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
@@ -280,6 +285,8 @@
                 console.log(el);
                 var img = document.createElement('img');
                 img.src = "cards/small/"+ui.item.id;
+                img.setAttribute("onmouseover", "this.src='cards/info/"+ui.item.id+"'");
+                img.setAttribute("onmouseout", "this.src='cards/small/"+ui.item.id+"'");
                 while (el[1].firstChild) {
                   el[1].removeChild(el[1].firstChild);
                 }
@@ -429,12 +436,12 @@
           // document.getElementById("id1").remove();
           // console.log(data);
           console.log(result);
-          for (var i = 0; i < result.length; i++) {
+          for (var i = 0; i < result.length-1; i++) {
             console.log(result[i][0]);
             // var tmp=[];
             // tmp.push(result[i])
             CreateTableFromJSON(result[i]);
-            divContainer.appendChild(document.createElement("br"));
+            // divContainer.appendChild(document.createElement("br"));
           //   for (var key in result[i]) {
           //     var string = "";
           //     if (result[i][key] == "2") {
@@ -446,6 +453,7 @@
           //     console.log(key, result[i][key]);
           //   }
           }
+          CreateTableFromJSON_t(result[result.length-1]);
           test();
           // $EXPORT.text(result);
         }
@@ -458,6 +466,69 @@
 
 
     function CreateTableFromJSON(myBooks) {
+
+
+        // EXTRACT VALUE FOR HTML HEADER.
+        // ('Book ID', 'Book Name', 'Category' and 'Price')
+        var col = [];
+        for (var i = 0; i < myBooks.length; i++) {
+            for (var key in myBooks[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // CREATE DYNAMIC TABLE.
+        var table = document.createElement("table");
+        table.setAttribute("align", "center");
+        table.setAttribute("id", "table1");
+        table.setAttribute("display", "inline-block");
+        // table.setAttribute("table-layout", "fixed");
+        // table.setAttribute("width", "300px");
+        table.setAttribute("class", "table1");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var i = 0; i < myBooks.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                if (j>0){
+                  // tabCell.innerHTML = myBooks[i][col[j]];
+                  var img = document.createElement('img');
+                  img.src = "cards/small/"+myBooks[i][col[j]];
+                  img.setAttribute("onmouseover", "this.src='cards/info/"+myBooks[i][col[j]]+"'");
+                  img.setAttribute("onmouseout", "this.src='cards/small/"+myBooks[i][col[j]]+"'");
+                  while (tabCell.firstChild) {
+                    tabCell.removeChild(tabCell.firstChild);
+                  }
+                  tabCell.appendChild(img);
+                }
+                else{
+                  tabCell.innerHTML = myBooks[i][col[j]];
+                }
+            }
+        }
+
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+        var divContainer = document.getElementById("showData");
+        // divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+    }
+
+    function CreateTableFromJSON_t(myBooks) {
 
 
         // EXTRACT VALUE FOR HTML HEADER.
@@ -500,6 +571,8 @@
                   // tabCell.innerHTML = myBooks[i][col[j]];
                   var img = document.createElement('img');
                   img.src = "cards/small/"+myBooks[i][col[j]];
+                  img.setAttribute("onmouseover", "this.src='cards/info/"+myBooks[i][col[j]]+"'");
+                  img.setAttribute("onmouseout", "this.src='cards/small/"+myBooks[i][col[j]]+"'");
                   while (tabCell.firstChild) {
                     tabCell.removeChild(tabCell.firstChild);
                   }
@@ -512,7 +585,7 @@
         }
 
         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-        var divContainer = document.getElementById("showData");
+        var divContainer = document.getElementById("showData_t");
         // divContainer.innerHTML = "";
         divContainer.appendChild(table);
     }
@@ -534,12 +607,7 @@
     function getMaxOfArray(numArray) {
       return Math.max.apply(null, numArray);
     }
-
-
-
-
-
-    </script>
+</script>
     <!-- <div style="padding-top:10px; padding-bottom:10px;">
       Footer
     </div> -->
