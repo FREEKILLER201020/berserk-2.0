@@ -31,6 +31,7 @@ $clan_search=$_POST["clan"];
 $nickname=$_POST["nickname"];
 $player_id=$_POST["player"];
 $t_cards=$_POST["t_cards"];
+$lazy=$_POST["lazy"];
 // $clan_search=171;
 
 // $idd=51;
@@ -375,8 +376,15 @@ if ($_POST["type"]=="era_data") {
                         $lbzz=$lb[1];
                     }
                 }
+                if ($lazy=="true"){
+                  array_push($new_players, new Player_class_era($cut->nick, $cut->max_frags, $cut->max_deaths, $cut->level, $cut->clan_id, $cut->clan_title, $a, $b, $u, $o, $lbzz));
+                }
+                else{
+                  if ($o>0){
+                    array_push($new_players, new Player_class_era($cut->nick, $cut->max_frags, $cut->max_deaths, $cut->level, $cut->clan_id, $cut->clan_title, $a, $b, $u, $o, $lbzz));
+                  }
+                }
                 // $lbzz=str_replace("+","<br>",$lbzz);
-                array_push($new_players, new Player_class_era($cut->nick, $cut->max_frags, $cut->max_deaths, $cut->level, $cut->clan_id, $cut->clan_title, $a, $b, $u, $o, $lbzz));
             }
         }
         // if (count($player->cuts)>1){

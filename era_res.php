@@ -231,6 +231,7 @@
           }
           echo " </select>";
           ?>
+          Показ игроков без очков <input id="checkbox" type="checkbox" name="option2" value="a2">
           <!-- <button type="button" onclick="create()">Click Me</button> -->
       </div>
       <hr>
@@ -262,6 +263,9 @@
       });
       $(document).ready(function(){
         $('#date').on("change", func);
+      });
+      $(document).ready(function(){
+        $('#checkbox').on("change", func);
       });
       $(document).ready(function(){
         $('#order').on("change", func);
@@ -437,7 +441,7 @@
           url:"sql.php", //the page containing php script
           type: "post", //request type,
           dataType: 'json',
-          data: {type:"era_data", datee: $('#date').val(),order: $('#order').val(),order_way: $('#order_way').val(), id: $('#era').val(),clan:$('#clans').val(),$nickname:$('#player').val()},
+          data: {type:"era_data", datee: $('#date').val(),order: $('#order').val(),order_way: $('#order_way').val(), id: $('#era').val(),clan:$('#clans').val(),$nickname:$('#player').val(),lazy:$('#checkbox').prop("checked")},
           async: false, // HERE
           success:function(result){
             // document.getElementById("id1").remove();

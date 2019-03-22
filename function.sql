@@ -53,7 +53,7 @@ DELIMITER ;
 
 
  DELIMITER $$
-CREATE PROCEDURE indexx (IN datte date, IN orderr varchar(500), IN clann_id int)
+CREATE PROCEDURE indexx (IN datte date, IN orderr text(500), IN clann_id int)
 
 
  BEGIN
@@ -106,7 +106,7 @@ CREATE PROCEDURE indexx (IN datte date, IN orderr varchar(500), IN clann_id int)
 
 
  DELIMITER $$
- CREATE PROCEDURE indexx_all (IN datte date, IN orderr varchar(500))
+ CREATE PROCEDURE indexx_all (IN datte date, IN orderr text(500))
 
 
  BEGIN
@@ -264,7 +264,7 @@ CREATE PROCEDURE clans_list (IN datte date)
 
 
   BEGIN
- select * from clans where id=idd order by timemark desc limit 1;
+ select * from Clans where id=idd order by timemark desc limit 1;
 
   END$$
 
@@ -282,7 +282,7 @@ CREATE PROCEDURE clans_list (IN datte date)
   DELIMITER ;
 
     DELIMITER $$
-    CREATE PROCEDURE get_city_data (IN titlee varchar(100))
+    CREATE PROCEDURE get_city_data (IN titlee text(100))
 
 
     BEGIN
@@ -295,11 +295,11 @@ CREATE PROCEDURE clans_list (IN datte date)
 
 
     DELIMITER $$
-    CREATE PROCEDURE clans_list_one_title (IN titlee varchar(100))
+    CREATE PROCEDURE clans_list_one_title (IN titlee text(100))
 
 
     BEGIN
-   select * from clans where title=titlee order by timemark desc limit 1;
+   select * from Clans where title=titlee order by timemark desc limit 1;
 
     END$$
 
@@ -360,7 +360,7 @@ select * from Cards where id=idd order by id;
   DECLARE CONTINUE HANDLER
          FOR NOT FOUND SET v_finished = 1;
 
-  CREATE TEMPORARY TABLE Players_t (id integer,nick nvarchar(500));
+  CREATE TEMPORARY TABLE Players_t (id integer,nick text(500));
 
   OPEN ids_cursor;
 
@@ -451,7 +451,7 @@ select * from Cards where id=idd order by id;
 
 
  DELIMITER $$
-CREATE PROCEDURE in_era_data (IN era_id integer, IN datte date, IN orderr varchar(500), IN clann_id int)
+CREATE PROCEDURE in_era_data (IN era_id integer, IN datte date, IN orderr text(500), IN clann_id int)
 
 
  BEGIN
@@ -506,7 +506,7 @@ CREATE PROCEDURE in_era_data (IN era_id integer, IN datte date, IN orderr varcha
 
 
   DELIMITER $$
- CREATE PROCEDURE in_era_data_all (IN era_id integer, IN datte date, IN orderr varchar(500))
+ CREATE PROCEDURE in_era_data_all (IN era_id integer, IN datte date, IN orderr text(500))
 
 
   BEGIN
@@ -659,7 +659,7 @@ SELECT * from Matches where forum=id_forum and game=id_game;
 
 
     DELIMITER $$
-    CREATE PROCEDURE add_cards_set (in datee datetime, in player integer, in json varchar(10000))
+    CREATE PROCEDURE add_cards_set (in datee datetime, in player integer, in json text(10000))
 
     BEGIN
     insert into Sets (timemark, player_id, cards) values (datee, player, json);
