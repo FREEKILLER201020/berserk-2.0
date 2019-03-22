@@ -244,6 +244,7 @@
     <!-- <div style="margin-bottom:20000px;">
     </div> -->
     <script>
+    document.getElementById("order").value="frags";
     // func();
     var pad = function(num) { return ('00'+num).slice(-2) };
     date = new Date();
@@ -368,12 +369,12 @@
           option.value = "points";
           x.add(option);
           if (bcp==null){
-            document.getElementById("order").value="frags";
+            document.getElementById("order").value="points";
           }
           else{
             document.getElementById("order").value=bcp;
           }
-          document.getElementById("order").value=bcp;
+          // document.getElementById("order").value=bcp;
           // $('#order').val($('#order').val());
           console.log("create2");
           create2();
