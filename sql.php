@@ -376,7 +376,7 @@ if ($_POST["type"]=="era_data") {
                         $lbzz=$lb[1];
                     }
                 }
-                if ($lazy=="true"){
+                if (($lazy!="true")){
                   array_push($new_players, new Player_class_era($cut->nick, $cut->max_frags, $cut->max_deaths, $cut->level, $cut->clan_id, $cut->clan_title, $a, $b, $u, $o, $lbzz));
                 }
                 else{

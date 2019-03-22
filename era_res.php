@@ -231,7 +231,7 @@
           }
           echo " </select>";
           ?>
-          Показ игроков без очков <input id="checkbox" type="checkbox" name="option2" value="a2">
+          Скрыть игроков без участий <input id="checkbox" type="checkbox" name="option2" value="a2">
           <!-- <button type="button" onclick="create()">Click Me</button> -->
       </div>
       <hr>
@@ -369,7 +369,7 @@
           option.value = "points";
           x.add(option);
           if (bcp==null){
-            document.getElementById("order").value="points";
+            document.getElementById("order").value="actions";
           }
           else{
             document.getElementById("order").value=bcp;
