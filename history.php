@@ -84,7 +84,7 @@ alert("Время указано по гринвичу!");
         $era_selected=-1;
         $time=GetLatestDate($connection, $config);
         $eras=array();
-        $query = "\nSELECT * FROM {$config["base_database"]}.eras ORDER BY started DESC;\n";
+        $query = "\nSELECT * FROM {$config["base_database"]}.Eras ORDER BY started DESC;\n";
         $result = $connection->query($query);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {

@@ -1,2 +1,2 @@
-* * * * * sudo php /Applications/MAMP/htdocs/berserk/test_scan.php > /Users/kirillburchenko/Desktop/log.txt
-* * * * * php /Applications/MAMP/htdocs/THE_DATA/scaner.ph > /Users/kirillburchenko/Desktop/log.txt 
+* * * * *  /Applications/MAMP/htdocs/berserk/test_scan.php > /Users/kirillburchenko/Desktop/log.txt
+* * * * *  /Applications/MAMP/htdocs/THE_DATA/scaner.ph > /Users/kirillburchenko/Desktop/log.txt 

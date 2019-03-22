@@ -118,7 +118,8 @@ exec("mkdir $path");
 $path.="/$day";
 exec("mkdir $path");
 // $path=realpath(dirname(__FILE__))."/DATA/$time";
-$path_perf.="/var/www/THE_DATA/DATA/$year/$month/$day/$time";
+$path_perf.="/Applications/MAMP/htdocs/THE_DATA/DATA/$year/$month/$day/$time";
+// $path_perf.="/var/www/THE_DATA/DATA/$year/$month/$day/$time";
 $path.="/$time";
 exec("mkdir $path");
 echo $path.PHP_EOL;
@@ -366,7 +367,14 @@ for ($i=$start_p;$i<$end_p;$i++) {
                         $clan->was=1;
                         if (($clan->title!=$row['title'])||($clan->points!=$row['points'])) {
                             $connection=Connect($config);
-                            $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
+                            $date="";
+                            $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
+                            $timee=strtotime($date);
+                            $d=date('Y-m-d H:i:s', $timee);
                             $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']});\n";
                             if ($debug==1){
                               $log["log"].="{".$query."}";
@@ -379,7 +387,14 @@ for ($i=$start_p;$i<$end_p;$i++) {
                 }
                 if ($was==0) {
                     $connection=Connect($config);
-                    $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
+                    $date="";
+                    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
+                    $timee=strtotime($date);
+                    $d=date('Y-m-d H:i:s', $timee);
                     $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']});\n";
                     if ($debug==1){
                       $log["log"].="{".$query."}";
@@ -472,7 +487,14 @@ for ($i=$start_p;$i<$end_p;$i++) {
             foreach ($clans_server as $clan) {
                 if ($clan->was==0) {
                     $connection=Connect($config);
-                    $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
+                    $date="";
+                    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
+                    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
+                    $timee=strtotime($date);
+                    $d=date('Y-m-d H:i:s', $timee);
                     $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points,gone) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']},\"{$d}\");\n";
                     if ($debug==1){
                       $log["log"].="{".$query."}";
@@ -512,7 +534,14 @@ for ($i=$start_p;$i<$end_p;$i++) {
                                 $was_city=1;
                                 if (($city->name!=$row['name'])||($city->clan!=$row['clan'])) {
                                     $connection=Connect($config);
-                                    $d=date('Y-m-d H:i:s', $folders[$i]['time']);
+                                    $date="";
+                                    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
+                                    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
+                                    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
+                                    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
+                                    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
+                                    $timee=strtotime($date);
+                                    $d=date('Y-m-d H:i:s', $timee);
                                     $query = "INSERT INTO {$config['base_database']}.Cities (timemark,id,name,clan_id) values (\"{$d}\",{$row['id']},\"{$row['name']}\",{$row['clan']});\n";
                                     if ($debug==1){
                                       $log["log"].="{".$query."}";
@@ -525,7 +554,14 @@ for ($i=$start_p;$i<$end_p;$i++) {
                         }
                         if ($was_city==0) {
                             $connection=Connect($config);
-                            $d=date('Y-m-d H:i:s', $folders[$i]['time']);
+                            $date="";
+                            $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
+                            $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
+                            $timee=strtotime($date);
+                            $d=date('Y-m-d H:i:s', $timee);
                             $query = "INSERT INTO {$config['base_database']}.Cities (timemark,id,name,clan_id) values (\"{$d}\",{$row['id']},\"{$row['name']}\",{$row['clan']});\n";
                             if ($debug==1){
                               $log["log"].="{".$query."}";
@@ -632,7 +668,14 @@ for ($i=$start_p;$i<$end_p;$i++) {
     file_put_contents($file_link, $text);
     $connection=Connect($config);
     $text=$connection->escape_string($text);
-    $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
+    $date="";
+    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
+    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
+    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
+    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
+    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
+    $timee=strtotime($date);
+    $d=date('Y-m-d H:i:s', $timee);
     $query = "INSERT INTO {$config['base_database']}.Logs (timemark,log) values (\"$d\",\"$text\")\n";
     if ($debug==1){
       echo $query.PHP_EOL;
