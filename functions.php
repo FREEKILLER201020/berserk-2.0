@@ -101,7 +101,7 @@ function GetClanId($config, $title)
   }
   // print_r($result);
   $clans_server=array();
-  // echo $query.PHP_EOL;
+  echo $query.PHP_EOL;
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
@@ -124,7 +124,7 @@ function WhoHasThisCity($config, $id)
   }
   // print_r($result);
   $clans_server=array();
-  // echo $query.PHP_EOL;
+  echo $query.PHP_EOL;
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
