@@ -8,9 +8,9 @@ $config = json_decode($file, true);
 // print_r($config);
 $connection=Connect($config);
 
-// $_POST["type"]="load_cards";
+// $_POST["type"]="timetable";
 // $_POST["player"]="1866676";
-$_POST["t_cards"]="5";
+// $_POST["t_cards"]="5";
 // $_POST["json"]='[{"карта":"akvanit","просмотр":"","id":"3"}]';
 // $_POST["datee"]="02/20/2019";
 // $_POST["clan"]="-1";
@@ -87,6 +87,8 @@ if ($_POST["type"]=="index") {
         while ($row = $result->fetch_assoc()) {
             // print_r($row);
             // if ($row["timemark"] == $today){
+            $clan_title="Нет клана";
+            $clan_id=-2;
             foreach ($clans as $clan) {
                 if ($row["clan_id"]==$clan->id) {
                     $clan_title=$clan->title;
@@ -94,10 +96,7 @@ if ($_POST["type"]=="index") {
                 }
             }
             // }
-            // else{
-            //   $clan_title="Нет клана";
-            //   $clan_id=-2;
-            // }
+
             if ($clan_search==-1) {
                 // if (($nickname==$row["nick"])&&($nickname!=null)){
                 $tmp= new Player_class($row["timemark"], $row["id"], Restring($row["nick"]), $row["frags"], $row["deaths"], $row["level"], $clan_id, $clan_title);
@@ -644,6 +643,75 @@ if ($_POST["type"]=="history") {
             }
         }
     }
+    $res=array();
+    $n=1;
+    foreach ($fights as $fight) {
+        foreach ($clans as $clan) {
+            if ($clan->id==$fight->attacker_id) {
+                $fight->attacker_id=$clan->title;
+            }
+            if ($clan->id==$fight->defender_id) {
+                $fight->defender_id=$clan->title;
+            }
+            if ($clan->id==$fight->winer) {
+                $fight->winer=$clan->title;
+            }
+        }
+        $fight->from=CityTitle($config, $fight->from);
+        $fight->to=CityTitle($config, $fight->to);
+        array_push($res, new Fight_class_web($n, $fight->attacker_id, $fight->defender_id, $fight->from, $fight->to, $fight->resolved, $fight->ended, $fight->winer));
+        $n++;
+    }
+    echo json_encode($res);
+}
+if ($_POST["type"]=="timetable") {
+    // $query = "call {$config["base_database"]}.era_data(\"$idd\");\n";
+    // $result = $connection->query($query);
+    // // print_r($result);
+    // // echo $query;
+    // if ($result->num_rows > 0) {
+    //     while ($row = $result->fetch_assoc()) {
+    //         // print_r($row);
+    //         // print_r($row);$id, $start, $end, $lbz, $points
+    //         $today=$row["ended"];
+    //     }
+    // }
+
+    $connection=Connect($config);
+    $today=date('Y-m-d H:i:s');
+    $query = "call {$config["base_database"]}.clans_list(\"$today\");\n";
+    $result = $connection->query($query);
+    $clans=array();
+    // echo $query;
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            // print_r($row);
+            $tmp= new Clan_class($row["id"], $row["title"], 0);
+            array_push($clans, $tmp);
+        }
+    }
+    // echo $today;
+    // $query = "use berserk;\n";
+    // $result = $connection->query($query);
+    $connection=Connect($config);
+    $query = "call {$config["base_database"]}.fights_timetable();\n";
+    $result = $connection->query($query);
+    $fights=array();
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            // print_r($row);
+            if ($clan_search!=-1) {
+                if (($clan_search==$row["attacker"])||($clan_search==$row["defender"])) {
+                    $tmp= new Fight_class($row["attacker"], $row["defender"], $row["fromm"], $row["too"], $row["declared"], $row["resolved"], $row["winer"], $row["ended"]);
+                    array_push($fights, $tmp);
+                }
+            } else {
+                $tmp= new Fight_class($row["attacker"], $row["defender"], $row["fromm"], $row["too"], $row["declared"], $row["resolved"], $row["winer"], $row["ended"]);
+                array_push($fights, $tmp);
+            }
+        }
+    }
+    // print_r($fights);
     $res=array();
     $n=1;
     foreach ($fights as $fight) {
