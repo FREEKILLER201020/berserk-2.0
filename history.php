@@ -180,9 +180,9 @@ alert("Время указано по гринвичу!");
     create2();
     $('#era').val($("#era").find('option').eq(0).val());
 
-      // $(document).ready(function(){
-      //   $('#era').on("input", eras_data);
-      // });
+      $(document).ready(function(){
+        $('#era').on("change", create2);
+      });
       $(document).ready(function(){
         $('#date').on("input", func);
       });

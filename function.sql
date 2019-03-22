@@ -642,7 +642,7 @@ SELECT * from Matches where forum=id_forum and game=id_game;
      -- END IF;
      --
      -- -- build email list
-     select * FROM Attacks where DATE(resolved)>=startedd and DATE(resolved)<=endedd + INTERVAL 1 DAY order by resolved ASC;
+     select * FROM Attacks where DATE(resolved)>=startedd and DATE(resolved)<=endedd + INTERVAL 1 DAY  and ended is not null order by resolved ASC;
 
 
      --
