@@ -8,7 +8,7 @@ $config = json_decode($file, true);
 // print_r($config);
 $connection=Connect($config);
 
-// $_POST["type"]="timetable";
+// $_POST["type"]="cities_list";
 // $_POST["player"]="1866676";
 // $_POST["t_cards"]="5";
 // $_POST["json"]='[{"карта":"akvanit","просмотр":"","id":"3"}]';
@@ -916,4 +916,35 @@ if ($_POST["type"]=="load_cards") {
     }
     array_push($sets, $cards);
     echo json_encode($sets);
+}
+if ($_POST["type"]=="cities_list") {
+    if ($clan_search!=-1){
+      $connection=Connect($config);
+      $query = "call {$config["base_database"]}.cities_clan($clan_search);\n";
+      $result = $connection->query($query);
+      $cities=array();
+      // echo $query;
+      if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+              // print_r($row);$id, $start, $end, $lbz, $points
+              $tmp= new City_web($row["name"], GetClanName($connection, $config,$row["clan_id"]));
+              array_push($cities, $tmp);
+          }
+      }
+    }
+    else{
+      $connection=Connect($config);
+      $query = "call {$config["base_database"]}.cities();\n";
+      $result = $connection->query($query);
+      $cities=array();
+      // echo $query;
+      if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+              // print_r($row);$id, $start, $end, $lbz, $points
+              $tmp= new City_web($row["name"], GetClanName($connection, $config,$row["clan_id"]));
+              array_push($cities, $tmp);
+          }
+      }
+    }
+    echo json_encode($cities,JSON_UNESCAPED_UNICODE);
 }

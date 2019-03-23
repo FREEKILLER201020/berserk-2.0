@@ -14,6 +14,18 @@ class City
     }
 }
 
+class City_web
+{
+    public $Название;
+    public $Клан;
+
+    public function __construct($n,$c)
+    {
+      $this->Название=$n;
+      $this->Клан=$c;
+    }
+}
+
 class Card
 {
   public $id;

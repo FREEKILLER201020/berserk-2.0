@@ -730,3 +730,102 @@ SELECT * from Matches where forum=id_forum and game=id_game;
             END$$
 
             DELIMITER ;
+
+
+
+
+             DELIMITER $$
+            CREATE PROCEDURE cities_clan (IN clan_idd int)
+
+
+             BEGIN
+
+              DECLARE v_finished INTEGER DEFAULT 0;
+                     DECLARE idd integer;
+              -- declare cursor for employee email
+              DEClARE ids_cursor CURSOR FOR
+              SELECT DISTINCT id FROM Cities;
+
+              -- declare NOT FOUND handler
+              DECLARE CONTINUE HANDLER
+                     FOR NOT FOUND SET v_finished = 1;
+
+              CREATE TEMPORARY TABLE Cities_t LIKE Cities;
+
+              OPEN ids_cursor;
+
+              get_email: LOOP
+
+              FETCH ids_cursor INTO idd;
+
+
+              IF v_finished = 1 THEN
+              LEAVE get_email;
+              END IF;
+
+              -- build email list
+              INSERT into Cities_t select * FROM Cities where id=idd and clan_id=clan_idd order by timemark DESC LIMIT 1;
+
+
+              END LOOP get_email;
+
+              CLOSE ids_cursor;
+              -- select orderr;
+              -- select * from Players_t order by nick;
+              select * from Cities_t  order by name;
+
+              DROP TEMPORARY TABLE Cities_t;
+
+             END$$
+
+             DELIMITER ;
+
+
+
+
+
+             DELIMITER $$
+            CREATE PROCEDURE cities ()
+
+
+             BEGIN
+
+              DECLARE v_finished INTEGER DEFAULT 0;
+                     DECLARE idd integer;
+              -- declare cursor for employee email
+              DEClARE ids_cursor CURSOR FOR
+              SELECT DISTINCT id FROM Cities;
+
+              -- declare NOT FOUND handler
+              DECLARE CONTINUE HANDLER
+                     FOR NOT FOUND SET v_finished = 1;
+
+              CREATE TEMPORARY TABLE Cities_t LIKE Cities;
+
+              OPEN ids_cursor;
+
+              get_email: LOOP
+
+              FETCH ids_cursor INTO idd;
+
+
+              IF v_finished = 1 THEN
+              LEAVE get_email;
+              END IF;
+
+              -- build email list
+              INSERT into Cities_t select * FROM Cities where id=idd order by timemark DESC LIMIT 1;
+
+
+              END LOOP get_email;
+
+              CLOSE ids_cursor;
+              -- select orderr;
+              -- select * from Players_t order by nick;
+              select * from Cities_t order by name;
+
+              DROP TEMPORARY TABLE Cities_t;
+
+             END$$
+
+             DELIMITER ;
