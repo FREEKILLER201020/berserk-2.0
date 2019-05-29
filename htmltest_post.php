@@ -35,6 +35,7 @@ if (in_array($cipher, openssl_get_cipher_methods()))
     $ivlen = openssl_cipher_iv_length($cipher);
     $iv = openssl_random_pseudo_bytes($ivlen);
     $data["n"] = openssl_encrypt($data["n"], $cipher, $key, $options=0, $iv, $tag);
+    $data["е"] = openssl_encrypt(time(), $cipher, $key, $options=0, $iv, $tag);
     $data["a"]=bin2hex($iv);
     $data["b"]=bin2hex($tag);
 }
@@ -74,7 +75,7 @@ if (!$json["err"]) {
     header("Location: $url");
     die();
 } else {
-    $url =dirname($url)."/htmltest.php?err=1&link=".$_GET['link'];
+    $url =dirname($url)."/htmltest.php?err={$json["err"]}&link=".$_GET['link'];
     header("Location: $url");
     die();
 }

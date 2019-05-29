@@ -5,12 +5,13 @@ require("class.php");
 require("functions.php");
 ini_set('memory_limit', '8192M');
 date_default_timezone_set ("Europe/Moscow");
+$data_folder_name="DATA3";
 
 $colors = new Colors();
 $all_attacks_array=array();
 $all_attacks_array_i=0;
 
-$file  = file_get_contents(realpath(dirname(__FILE__))."/../config.json");
+$file  = file_get_contents(realpath(dirname(__FILE__))."/../config2.json");
 $config = json_decode($file, true);
 $scanned_folders=array();
 $scanned_folders["done"]=0;
@@ -22,6 +23,7 @@ $end_p=-1;
 $restart=-1;
 $restart_count=0;
 $debug=0;
+$debug2=0;
 $no_update=0;
 $continue=0;
 for ($i=0;$i<count($argv);$i++) {
@@ -30,6 +32,9 @@ for ($i=0;$i<count($argv);$i++) {
     }
     if ($argv[$i] == "-d") {
         $debug=1;
+    }
+    if ($argv[$i] == "-d2") {
+        $debug2=1;
     }
     if ($argv[$i] == "-l") {
         $load=1;
@@ -53,6 +58,9 @@ for ($i=0;$i<count($argv);$i++) {
         $continue=1;
     }
 }
+
+// GivNext($save,$load);
+
 
 // GET NEW DATA
 // if ($load!=1) {
@@ -103,53 +111,79 @@ for ($i=0;$i<count($argv);$i++) {
 //         }
 //     }
 // }
+if (!$debug2){
+  $year=date('Y');
+  $month=date('F');
+  $day=date('d');
+  $time= date('l-jS-\of-F-Y-h:i:s-A');
+  $clans=GetClans($debug2,$save,$load);
+  // $date = new DateTime();
+  print_r($clans);
+  $path=realpath(dirname(__FILE__))."/../THE_DATA/$data_folder_name/$year";
+  exec("mkdir $path");
+  $path.="/$month";
+  exec("mkdir $path");
+  $path.="/$day";
+  exec("mkdir $path");
+  // $path=realpath(dirname(__FILE__))."/DATA/$time";
+  // $path_perf.="/Applications/MAMP/htdocs/THE_DATA/DATA/$year/$month/$day/$time";
+  $path_perf.=realpath(dirname(__FILE__))."/../THE_DATA/$data_folder_name/$year/$month/$day/$time";
+  $path.="/$time";
+  exec("mkdir $path");
+  echo $path.PHP_EOL;
+  $query=" wget -O \"$path_perf/cities_$time.json\" http://berserktcg.ru/api/export/cities.json";
+  echo $query.PHP_EOL;
+  exec($query);
+  $query=" wget -O \"$path_perf/clans_$time.json\" http://berserktcg.ru/api/export/clans.json";
+  exec($query);
+  $query=" wget -O \"$path_perf/fights_$time.json\" http://berserktcg.ru/api/export/attacks.json";
+  exec($query);
+  foreach ($clans as $clan) {
+      $query=" wget -O \"$path_perf/clan[{$clan['id']}]_$time.json\" http://berserktcg.ru/api/export/clan/".$clan['id'].".json";
+      exec($query);
+  }
+  // echo $time;
+  $file=array();
+    $folders=array();
+    $folder="../THE_DATA/$data_folder_name";
+    $date="";
+    $date.=intval(explode('-', $time)[1])." ";
+    $date.=explode('-', $time)[3]." ";
+    $date.=explode('-', $time)[4]." ";
+    $date.=explode('-', $time)[5]." ";
+    $date.=explode('-', $time)[6]." ";
+    $file["folder"]="$folder/$year/$month/$day/$time";
+    $file["time"]=strtotime($date);
+    $file["file_dir"]="$time";
+    array_push($folders, $file);
 
-$year=date('Y');
-$month=date('F');
-$day=date('d');
-$time= date('l-jS-\of-F-Y-h:i:s-A');
-$clans=GetClans();
-// $date = new DateTime();
-print_r($clans);
-$path=realpath(dirname(__FILE__))."/../THE_DATA/DATA/$year";
-exec("mkdir $path");
-$path.="/$month";
-exec("mkdir $path");
-$path.="/$day";
-exec("mkdir $path");
-// $path=realpath(dirname(__FILE__))."/DATA/$time";
-// $path_perf.="/Applications/MAMP/htdocs/THE_DATA/DATA/$year/$month/$day/$time";
-$path_perf.="/var/www/THE_DATA/DATA/$year/$month/$day/$time";
-$path.="/$time";
-exec("mkdir $path");
-echo $path.PHP_EOL;
-$query=" wget -O \"$path_perf/cities_$time.json\" http://berserktcg.ru/api/export/cities.json";
-echo $query.PHP_EOL;
-exec($query);
-$query=" wget -O \"$path_perf/clans_$time.json\" http://berserktcg.ru/api/export/clans.json";
-exec($query);
-$query=" wget -O \"$path_perf/fights_$time.json\" http://berserktcg.ru/api/export/attacks.json";
-exec($query);
-foreach ($clans as $clan) {
-    $query=" wget -O \"$path_perf/clan[{$clan['id']}]_$time.json\" http://berserktcg.ru/api/export/clan/".$clan['id'].".json";
-    exec($query);
+  print_r($folders);
+  // exit();
 }
-// echo $time;
-$file=array();
+else{
   $folders=array();
-  $folder="../THE_DATA/DATA";
-  $date="";
-  $date.=intval(explode('-', $time)[1])." ";
-  $date.=explode('-', $time)[3]." ";
-  $date.=explode('-', $time)[4]." ";
-  $date.=explode('-', $time)[5]." ";
-  $date.=explode('-', $time)[6]." ";
-  $file["folder"]="$folder/$year/$month/$day/$time";
-  $file["time"]=strtotime($date);
-  $file["file_dir"]="$time";
-  array_push($folders, $file);
+  $t=GivNext($save,$load);
+  if (!isset($t["folder"])){
+    exit();
+  }
+  // $clans=GetClans($debug2,$save,$load);
+  $path_perf=$t["folder"];
+  // $path_perf.=realpath(dirname(__FILE__))."/../THE_DATA/$data_folder_name/$year/$month/$day/$time";
+  // $path.="/$time";
+  $path_perf2=str_replace ( "DATA2" , $data_folder_name , $path_perf);
+  echo "mkdir -p $path_perf2";
 
-print_r($folders);
+  exec("mkdir -p $path_perf2");
+  exec("cp $path_perf/* $path_perf2");
+  $tmp=array();
+  $tmp=$t;
+  $tmp["folder"]=str_replace ( "DATA2" , $data_folder_name , $tmp["folder"]);
+  $tmp["file_dir"]=str_replace ( "DATA2" , $data_folder_name , $tmp["file_dir"]);
+  array_push($folders,$tmp);
+  print_r($folders);
+  // exit();
+
+}
 
 // // SAVE NEW DATA
 // if ($save==1) {
@@ -230,16 +264,19 @@ if (($start_p==-1)&&($end_p==-1)){
 }
 
 if ($continue==1){
-  $file_done  = file_get_contents(realpath(dirname(__FILE__))."/scanned_folders.json");
+  $file_done  = file_get_contents(realpath(dirname(__FILE__))."/scanned_folders_new.json");
   $scanned_done = json_decode($file_done, true);
-  $start_p=$scanned_done["done"];
-  $scanned_folders["done"]=$start_p;
+  // $start_p=$scanned_done["done"];
+  $scanned_folders["done"]=$scanned_done["done"];;
 }
 if ($debug==1){
   echo PHP_EOL."Scan from $start_p to $end_p".PHP_EOL;
 }
 for ($i=$start_p;$i<$end_p;$i++) {
+  // echo $scanned_folders["done"];
     $scanned_folders["done"]++;
+    // echo $scanned_folders["done"];
+    // exit();
     if ($restart>0){
       if ($restart_count>0){
         $restart_count--;
@@ -367,14 +404,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                         $clan->was=1;
                         if (($clan->title!=$row['title'])||($clan->points!=$row['points'])) {
                             $connection=Connect($config);
-                            $date="";
-                            $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
-                            $timee=strtotime($date);
-                            $d=date('Y-m-d H:i:s', $timee);
+                            $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
                             $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']});\n";
                             if ($debug==1){
                               $log["log"].="{".$query."}";
@@ -387,14 +417,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                 }
                 if ($was==0) {
                     $connection=Connect($config);
-                    $date="";
-                    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
-                    $timee=strtotime($date);
-                    $d=date('Y-m-d H:i:s', $timee);
+                    $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
                     $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']});\n";
                     if ($debug==1){
                       $log["log"].="{".$query."}";
@@ -487,14 +510,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
             foreach ($clans_server as $clan) {
                 if ($clan->was==0) {
                     $connection=Connect($config);
-                    $date="";
-                    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
-                    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
-                    $timee=strtotime($date);
-                    $d=date('Y-m-d H:i:s', $timee);
+                    $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
                     $query = "INSERT INTO {$config['base_database']}.Clans (timemark,id,title,points,gone) values (\"{$d}\",{$row['id']},'{$row['title']}',{$row['points']},\"{$d}\");\n";
                     if ($debug==1){
                       $log["log"].="{".$query."}";
@@ -534,14 +550,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                                 $was_city=1;
                                 if (($city->name!=$row['name'])||($city->clan!=$row['clan'])) {
                                     $connection=Connect($config);
-                                    $date="";
-                                    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
-                                    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
-                                    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
-                                    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
-                                    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
-                                    $timee=strtotime($date);
-                                    $d=date('Y-m-d H:i:s', $timee);
+                                    $d=date('Y-m-d H:i:s', $folders[$i]['time']);
                                     $query = "INSERT INTO {$config['base_database']}.Cities (timemark,id,name,clan_id) values (\"{$d}\",{$row['id']},\"{$row['name']}\",{$row['clan']});\n";
                                     if ($debug==1){
                                       $log["log"].="{".$query."}";
@@ -554,14 +563,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
                         }
                         if ($was_city==0) {
                             $connection=Connect($config);
-                            $date="";
-                            $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
-                            $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
-                            $timee=strtotime($date);
-                            $d=date('Y-m-d H:i:s', $timee);
+                            $d=date('Y-m-d H:i:s', $folders[$i]['time']);
                             $query = "INSERT INTO {$config['base_database']}.Cities (timemark,id,name,clan_id) values (\"{$d}\",{$row['id']},\"{$row['name']}\",{$row['clan']});\n";
                             if ($debug==1){
                               $log["log"].="{".$query."}";
@@ -659,8 +661,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
         }
     }
     // print_r($log);
-    $file_link=$path_perf."/log_".$folders[$i]['file_dir'].".json";
-    echo $file_link.PHP_EOL;
+    $file_link=$folders[$i]['folder']."/log_".$folders[$i]['file_dir'].".json";
     if (filesize($file_link)!=0) {
       shell_exec('rm '.$file_link);
     }
@@ -668,14 +669,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
     file_put_contents($file_link, $text);
     $connection=Connect($config);
     $text=$connection->escape_string($text);
-    $date="";
-    $date.=intval(explode('-', $folders[$i]['file_dir'])[1])." ";
-    $date.=explode('-', $folders[$i]['file_dir'])[3]." ";
-    $date.=explode('-', $folders[$i]['file_dir'])[4]." ";
-    $date.=explode('-', $folders[$i]['file_dir'])[5]." ";
-    $date.=explode('-', $folders[$i]['file_dir'])[6]." ";
-    $timee=strtotime($date);
-    $d=date('Y-m-d H:i:s', $timee);
+    $d=date('Y-m-d H:i:s', $folders[$i]['time']-3*60*60);
     $query = "INSERT INTO {$config['base_database']}.Logs (timemark,log) values (\"$d\",\"$text\")\n";
     if ($debug==1){
       echo $query.PHP_EOL;
@@ -683,7 +677,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
     $result = $connection->query($query);
     mysqli_close($connection);
 }
-$file_link_scan="scanned_folders.json";
+$file_link_scan="scanned_folders_new.json";
 file_put_contents($file_link_scan, json_encode($scanned_folders, JSON_UNESCAPED_UNICODE));
 
 // DATA ANALISE END
@@ -692,9 +686,98 @@ echo PHP_EOL."$bad_folders/".count($folders)." are bad folders ".$bad_folders/co
 // echo PHP_EOL.$crit.PHP_EOL;
 // echo PHP_EOL."attacks may have errors".$may_have_err.PHP_EOL;
 
-function GetClans()
+function GetClans($debug,$save,$load)
 {
-    $file  = file_get_contents("http://berserktcg.ru/api/export/clans.json");
-    $json = json_decode($file, true);
-    return $json;
+    if ($debug==0){
+      $file  = file_get_contents("http://berserktcg.ru/api/export/clans.json");
+      $json = json_decode($file, true);
+      return $json;
+    }
+    else{
+      $t=GivNext($save,$load);
+      $file  = file_get_contents($t["folder"]."/clans_".$t["file_dir"].".json");
+      $json = json_decode($file, true);
+      return $json;
+    }
+}
+
+function GivNext($save,$load){
+  $res=array();
+  $file_done  = file_get_contents(realpath(dirname(__FILE__))."/scanned_folders_new.json");
+  $scanned_done = json_decode($file_done, true);
+  $start_p=$scanned_done["done"];
+  if (!isset($start_p)){
+    $start_p=0;
+  }
+  if ($load!=1) {
+      $folder="../THE_DATA/DATA2";
+      $ls=shell_exec("ls $folder");
+      $folders=array();
+      $years=explode("\n", $ls);
+      unset($years[count($years)-1]);
+      foreach ($years as $year) {
+          $ls=shell_exec("ls $folder/$year");
+          $months=explode("\n", $ls);
+          unset($months[count($months)-1]);
+          foreach ($months as $month) {
+              $ls=shell_exec("ls $folder/$year/$month");
+              $days=explode("\n", $ls);
+              unset($days[count($days)-1]);
+              foreach ($days as $day) {
+                  $file=array();
+                  $ls=shell_exec("ls $folder/$year/$month/$day");
+                  $scans=explode("\n", $ls);
+                  unset($scans[count($scans)-1]);
+                  foreach ($scans as $scan) {
+                      $date="";
+                      $date.=intval(explode('-', $scan)[1])." ";
+                      $date.=explode('-', $scan)[3]." ";
+                      $date.=explode('-', $scan)[4]." ";
+                      $date.=explode('-', $scan)[5]." ";
+                      $date.=explode('-', $scan)[6]." ";
+                      $file["folder"]="$folder/$year/$month/$day/$scan";
+                      $file["time"]=strtotime($date);
+                      $file["file_dir"]="$scan";
+                      array_push($folders, $file);
+                  }
+              }
+          }
+      }
+      // SORT NEW DATA
+      $t0=microtime(true)*10000;
+      for ($i=0;$i<count($folders);$i++) {
+          $t=(microtime(true)*10000-$t0)/$i;
+          progressBar($i, count($folders), $t, $t0);
+          for ($j=$i;$j<count($folders);$j++) {
+              if ($folders[$i]['time']>$folders[$j]['time']) {
+                  $tmp=$folders[$i];
+                  $folders[$i]=$folders[$j];
+                  $folders[$j]=$tmp;
+              }
+          }
+      }
+  }
+
+  // SAVE NEW DATA
+  if ($save==1) {
+      $file_load="big_order_data2.json";
+      shell_exec("rm big_order_data2.json");
+      // $folders = json_decode($file_load, true);
+      file_put_contents($file_load, json_encode($folders, JSON_UNESCAPED_UNICODE));
+  }
+  // LOAD SAVED DATA
+  if ($load==1) {
+      $file_load  = file_get_contents(realpath(dirname(__FILE__))."/big_order_data2.json");
+      $folders = json_decode($file_load, true);
+      // file_put_contents($file_load, json_encode($data,JSON_UNESCAPED_UNICODE));
+  }
+      // print_r($folders);
+      // print_r($folders[$start_p]);
+      $res['folder'] = $folders[$start_p]['folder'];
+      $res['time'] = $folders[$start_p]['time'];
+      $res['file_dir'] = $folders[$start_p]['file_dir'];
+      // print_r($res);
+      return $res;
+      // exit();
+  // }
 }

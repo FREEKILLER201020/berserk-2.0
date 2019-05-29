@@ -8,7 +8,7 @@ $config = json_decode($file, true);
 // print_r($config);
 $connection=Connect($config);
 
-// $_POST["type"]="cities_list";
+// $_POST["type"]="load_cards";
 // $_POST["player"]="1866676";
 // $_POST["t_cards"]="5";
 // $_POST["json"]='[{"карта":"akvanit","просмотр":"","id":"3"}]';
@@ -876,12 +876,13 @@ if ($_POST["type"]=="load_cards") {
                 // echo $set[$j]->id." and ".$set[$k]->id.PHP_EOL;
                 // if ($all_cards_origin[$j]->id==$all_cards_origin[$k]->id){
                 $table[$set[$j]->id][$set[$k]->id]++;
+                $table[$set[$k]->id][$set[$j]->id]++;
                 // }
             }
         }
     }
     // print_r($table);
-    // PrintTable($table);
+    PrintTable($table);
     $common_cards=array();
     foreach ($table as $key => $row) {
         // print_r($row);

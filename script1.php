@@ -6,11 +6,13 @@ define('PHPBB_ROOT_PATH', './forum/');
 $dt=array();
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
+$max_delta=10;
 
 include($phpbb_root_path . 'common.' . $phpEx);
 
 $username = request_var('n', '', true);
 $password = request_var('p', '', true);
+$time = request_var('t', '', true);
 $a = request_var('a', '', true);
 $b = request_var('b', '', true);
 $c = request_var('c', '', true);
@@ -31,9 +33,17 @@ if (in_array($cipher, openssl_get_cipher_methods()))
     $iv = hex2bin($a);
     $tag = hex2bin($b);
     $username = openssl_decrypt($username, $cipher, $key, $options=0, $iv, $tag);
+    $time = openssl_decrypt($time, $cipher, $key, $options=0, $iv, $tag);
     echo $username."\n";
     // print_r($data);
     // $res=json_encode($data);
+}
+
+if(abs($time-timer()>$max_delta)){
+  // ключ просрочен
+  $dt["err"]=4;
+  echo json_encode($dt);
+  exit();
 }
 
 if (in_array($cipher, openssl_get_cipher_methods()))

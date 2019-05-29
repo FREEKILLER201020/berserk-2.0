@@ -23,6 +23,7 @@ $restart_count=0;
 $debug=0;
 $no_update=0;
 $continue=0;
+$count=-1;
 for ($i=0;$i<count($argv);$i++) {
     if ($argv[$i] == "-s") {
         $save=1;
@@ -50,6 +51,9 @@ for ($i=0;$i<count($argv);$i++) {
     }
     if ($argv[$i] == "-contin") {
         $continue=1;
+    }
+    if ($argv[$i] == "-count") {
+        $count=$argv[$i+1];
     }
 }
 
@@ -192,6 +196,9 @@ if ($continue==1){
   $start_p=$scanned_done["done"];
   $scanned_folders["done"]=$start_p;
 }
+if ($count>-1){
+  $end_p=$start_p+$count;
+}
 if ($debug==1){
   echo PHP_EOL."Scan from $start_p to $end_p".PHP_EOL;
 }
@@ -212,7 +219,7 @@ for ($i=$start_p;$i<$end_p;$i++) {
     $log=array();
     $timee=$folders[$i]['time'];
     $t=(microtime(true)*10000-$t0)/$i;
-    progressBar($i, count($folders), $t, $t0);
+    progressBar($i, $end_p, $t, $t0);
     $noerr=1;
     // FOLDER IS BAD IF CLANS FILE IS EMPTY
     $file  = realpath(dirname(__FILE__))."/{$folders[$i]['folder']}/clans_{$folders[$i]['file_dir']}.json";
@@ -580,7 +587,20 @@ for ($i=$start_p;$i<$end_p;$i++) {
             }
         }
     }
-    // print_r($log);
+    $connection=Connect($config);
+    $query = "show status where `variable_name` = 'Threads_connected'";
+    $result = $connection->query($query);
+    mysqli_close($connection);
+    $var1=$threads;
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $log["Threads"]=$row["Value"];
+            $threads=$row["Value"];
+        }
+    }
+    if ($var1!=$threads){
+      print_r($log);
+    }
     $file_link=$folders[$i]['folder']."/log_".$folders[$i]['file_dir'].".json";
     if (filesize($file_link)!=0) {
       shell_exec('rm '.$file_link);

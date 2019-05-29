@@ -96,12 +96,13 @@ function GetClanId($config, $title)
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.clans_list_one_title('$title');\n";
   $result = $connection->query($query);
+  mysqli_close($connection);
   if (!$result) {
       echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
   // print_r($result);
   $clans_server=array();
-  echo $query.PHP_EOL;
+  // echo $query.PHP_EOL;
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
@@ -110,7 +111,6 @@ function GetClanId($config, $title)
           }
       }
   }
-  mysqli_close($connection);
   return -1;
 }
 
@@ -119,12 +119,13 @@ function WhoHasThisCity($config, $id)
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.get_city_data_id($id);\n";
   $result = $connection->query($query);
+  mysqli_close($connection);
   if (!$result) {
       echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
   // print_r($result);
   $clans_server=array();
-  echo $query.PHP_EOL;
+  // echo $query.PHP_EOL;
   if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
           // print_r($row);
@@ -133,7 +134,6 @@ function WhoHasThisCity($config, $id)
           }
       }
   }
-  mysqli_close($connection);
   return -1;
 }
 
@@ -142,6 +142,7 @@ function CityId($config, $title)
   $connection=Connect($config);
   $query = "call {$config["base_database"]}.get_city_data('$title');\n";
   $result = $connection->query($query);
+  mysqli_close($connection);
   if (!$result) {
       // echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
@@ -156,7 +157,6 @@ function CityId($config, $title)
           }
       }
   }
-  mysqli_close($connection);
   return -1;
 }
 
@@ -169,6 +169,7 @@ function CityTitle($config, $id)
   $query = "call {$config["base_database"]}.get_city_data_id($id);\n";
   // echo $query;
   $result = $connection->query($query);
+  mysqli_close($connection);
   if (!$result) {
       // echo ("Error during creating era table".$connection->connect_errno.$connection->connect_error);
   }
@@ -183,7 +184,6 @@ function CityTitle($config, $id)
           }
       }
   }
-  mysqli_close($connection);
   return -1;
 }
 

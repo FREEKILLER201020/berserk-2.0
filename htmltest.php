@@ -149,7 +149,8 @@ if (($_SESSION['u']!=null)&&($_SESSION['p']!=null)) {
 
   echo dirname($url); ?>/htmltest_post.php?link=<?php echo $_GET['link'] ?>">
 
-  <?php if ($_GET['err']==1) {
+  <?php
+  if ($_GET['err']==1) {
       //   echo "
       //   <div class=\"container\" style=\"background-color:red; margin:0 auto;text-align: center;\">
       //     Something went wrong. Please try again.
@@ -157,7 +158,43 @@ if (($_SESSION['u']!=null)&&($_SESSION['p']!=null)) {
       // ";
       echo "
     <script>
-      alert(\"Something went wrong. Please try again.\");
+      alert(\"Пожалуйста введите имя и пароль\");
+    </script>
+    ";
+  }
+  elseif ($_GET['err']==2) {
+      //   echo "
+      //   <div class=\"container\" style=\"background-color:red; margin:0 auto;text-align: center;\">
+      //     Something went wrong. Please try again.
+      //   </div>
+      // ";
+      echo "
+    <script>
+      alert(\"Такое имя не найдено в базе данных форума\");
+    </script>
+    ";
+  }
+  elseif ($_GET['err']==3) {
+      //   echo "
+      //   <div class=\"container\" style=\"background-color:red; margin:0 auto;text-align: center;\">
+      //     Something went wrong. Please try again.
+      //   </div>
+      // ";
+      echo "
+    <script>
+      alert(\"Проверку пароль не прошел!\");
+    </script>
+    ";
+  }
+  elseif ($_GET['err']==4) {
+      //   echo "
+      //   <div class=\"container\" style=\"background-color:red; margin:0 auto;text-align: center;\">
+      //     Something went wrong. Please try again.
+      //   </div>
+      // ";
+      echo "
+    <script>
+      alert(\"Ключ просрочен\");
     </script>
     ";
   }
